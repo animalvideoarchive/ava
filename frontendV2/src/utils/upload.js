@@ -35,14 +35,25 @@ export class Uploader {
   }
 
   start() {
-    this.initialize()
+    console.log("Start")
+    // this.initialize()
+    // Return a promise that resolves when the upload is complete
+    this.uploadPromise = new Promise((resolve, reject) => {
+        this.resolveUpload = resolve;
+        this.rejectUpload = reject;
+    
+        // Start the upload process
+        this.initialize();
+        });
+    
+    return this.uploadPromise; // return the promise to be awaited or chained
   }
 
   async initialize() {
     try {
       // adding the the file extension (if present) to fileName
       let fileName = this.file.name
-
+      console.log("File Name: ", fileName)
       // initializing the multipart request
       const videoInitializationUploadInput = {
         name: fileName,
@@ -55,12 +66,13 @@ export class Uploader {
       })
 
       const AWSFileDataOutput = initializeReponse.data
-
+      console.log(AWSFileDataOutput)
       this.fileId = AWSFileDataOutput.fileId
       this.fileKey = AWSFileDataOutput.fileKey
 
       // retrieving the pre-signed URLs
       const numberOfparts = Math.ceil(this.file.size / this.chunkSize)
+      console.log("Number of parts: ", numberOfparts)
 
       const AWSMultipartFileDataInput = {
         fileId: this.fileId,
@@ -75,6 +87,7 @@ export class Uploader {
         baseURL:this.baseURL
       })
 
+      console.log("New Parts ", urlsResponse.data.parts)
       const newParts = urlsResponse.data.parts
       this.parts.push(...newParts)
 
@@ -99,7 +112,11 @@ export class Uploader {
       return
     }
 
+    console.log("Parts: ", this.parts)
     const part = this.parts.pop()    
+    console.log("part :", part.PartNumber)   
+    console.log("File name: ",this.fileKey)
+    console.log("Time now ", new Date().toString())
     if (this.file && part) {
       const sentSize = (part.PartNumber - 1) * this.chunkSize
       const chunk = this.file.slice(sentSize, sentSize + this.chunkSize)
@@ -117,8 +134,9 @@ export class Uploader {
             retry++
             const wait = (ms) => new Promise((res) => setTimeout(res, ms));
             //exponential backoff retry before giving up
-            console.log(`Part#${part.PartNumber} failed to upload, backing off ${2 ** retry * 100} before retrying...`)
-            wait(2 ** retry * 100).then(() => {              
+            console.log(`File ${this.fileKey} Part#${part.PartNumber} failed to upload, backing off ${2 ** retry * 500} before retrying...`)
+            console.log("All uploadedParts done in error: ",this.uploadedParts)
+            wait(2 ** retry * 500).then(() => {              
               this.parts.push(part)
               this.sendNext(retry)
             })
@@ -143,8 +161,10 @@ export class Uploader {
 
     try {
       await this.sendCompleteRequest()
+      this.resolveUpload(); // Resolve the promise when upload is complete
     } catch (error) {
       this.onErrorFn(error)
+      this.rejectUpload(error); // Reject the promise with the error
     }
   }
 
@@ -248,7 +268,7 @@ export class Uploader {
               }
 
               this.uploadedParts.push(uploadedPart)
-
+              console.log("All uploadedParts done: ",this.uploadedParts)
               resolve(xhr.status)
               delete this.activeConnections[part.PartNumber - 1]
               window.removeEventListener('offline', abortXHR)
