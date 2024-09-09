@@ -1,0 +1,77 @@
+/* Form container */
+.form-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Form content */
+  .form-content {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Form header styling */
+  .form-header {
+    margin-bottom: 20px;
+  }
+  
+  .form-header h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  /* Button container */
+  .button-container {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px;
+  }
+  
+  .button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Specific button styles */
+  .button.prevHide {
+    background-color: #ccc;
+  }
+  
+  .button.nextHide {
+    background-color: #ccc;
+  }
+  
+  .button.submitHide {
+    background-color: #ffcc00;
+    color: white;
+  }
+  
+  /* Disable button styling */
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Progress bar styling */
+  .progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  /* Stepper styles (e.g., circles and lines) */
+  .step {
+    width: 100px;
+    height: 100px;
+  }
+  
