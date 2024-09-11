@@ -3,49 +3,51 @@ import { Uploader } from "./utils/upload"
 import { useEffect, useState } from "react"
 import Form from "./components/Form";
 import { FormProvider } from './contexts/FormContext';
+import useFormContext from "./hooks/useFormContext";  // Make sure this hook is properly defined to manage form state
 
 // import HorizontalLinearAlternativeLabelStepper from "./Components/UserHeader";
 function App() {
-  const [files, setFiles] = useState([])
-  const [pgvalues, setPgvalues] = useState({})
-  const [perfs, setPerfs] = useState({})
-  const [baseUrl, setBaseUrl] = useState(undefined)
-  const [partsize, setPartsize] = useState(undefined)
-  const [numuploads, setNumuploads] = useState(undefined)
-  const [ta, setTa] = useState(undefined)
 
-  async function handleFileUpload(files) {
-    for (const file of files) {
-      const uploaderOptions = {
-        file: file,
-        baseURL: baseUrl,
-        chunkSize: partsize,
-        threadsQuantity: numuploads,
-        useTransferAcceleration: ta 
-      }
+  // const { files, setFiles} = useFormContext();
+  // const [pgvalues, setPgvalues] = useState({})
+  // const [perfs, setPerfs] = useState({})
+  // const [baseUrl, setBaseUrl] = useState(undefined)
+  // const [partsize, setPartsize] = useState(undefined)
+  // const [numuploads, setNumuploads] = useState(undefined)
+  // const [ta, setTa] = useState(undefined)
 
-      const uploader = new Uploader(uploaderOptions)
-      const tBegin = performance.now()
+  // async function handleFileUpload() {
+  //   for (const file of files) {
+  //     const uploaderOptions = {
+  //       file: file,
+  //       baseURL: baseUrl,
+  //       chunkSize: partsize,
+  //       threadsQuantity: numuploads,
+  //       useTransferAcceleration: ta 
+  //     }
 
-      uploader
-        .onProgress(({ percentage }) => {
-          setPgvalues(prev => ({...prev, [file.name]: percentage}))
-          if (percentage === 100) {
-            setPerfs(prev => ({...prev, [file.name]: (performance.now() - tBegin)/1000}))
-          }
-        })
-        .onError((error) => {
-          console.error(`Error uploading ${file.name}:`, error)
-          setFiles(prev => prev.filter(f => f !== file))
-        })
-      try {
-        console.log("Starting upload for", file.name)
-        await uploader.start()  // Waits for the current file to be uploaded
-      } catch (error) {
-        console.error(`Error starting upload for ${file.name}:`, error)
-      }
-    }
-  };
+  //     const uploader = new Uploader(uploaderOptions)
+  //     const tBegin = performance.now()
+
+  //     uploader
+  //       .onProgress(({ percentage }) => {
+  //         setPgvalues(prev => ({...prev, [file.name]: percentage}))
+  //         if (percentage === 100) {
+  //           setPerfs(prev => ({...prev, [file.name]: (performance.now() - tBegin)/1000}))
+  //         }
+  //       })
+  //       .onError((error) => {
+  //         console.error(`Error uploading ${file.name}:`, error)
+  //         // setFiles(prev => prev.filter(f => f !== file))
+  //       })
+  //     try {
+  //       console.log("Starting upload for", file.name)
+  //       await uploader.start()  // Waits for the current file to be uploaded
+  //     } catch (error) {
+  //       console.error(`Error starting upload for ${file.name}:`, error)
+  //     }
+  //   }
+  // };
   
 
   // useEffect(() => {
@@ -53,16 +55,16 @@ function App() {
   //       // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [files])
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files)
-    if (selectedFiles.length > 20) {
-      alert("You can select a maximum of 20 files.")
-      return
-    }
-    setFiles(selectedFiles)
-    setPgvalues({})
-    setPerfs({})
-  }
+  // const handleFileChange = (e) => {
+  //   const selectedFiles = Array.from(e.target.files)
+  //   if (selectedFiles.length > 20) {
+  //     alert("You can select a maximum of 20 files.")
+  //     return
+  //   }
+  //   setFiles(selectedFiles)
+  //   // setPgvalues({})
+  //   // setPerfs({})
+  // }
 
   return (
     <FormProvider>
