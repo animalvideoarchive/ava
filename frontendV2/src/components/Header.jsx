@@ -1,11 +1,13 @@
 import React from 'react';
-// import '../assets'
+import logoImage from "../assets/logo.png";
+import "../styles/index.css";
+
 const Header = () => {
   return (
     <header className="header">
       <div className="logo">
-        <img src="./assets/zoo-logo.png" alt="Saint Louis Zoo" />
-        <span>Saint Louis Zoo</span>
+        <img src={logoImage} alt="Saint Louis Zoo" />
+        {/* <span>Saint Louis Zoo</span> */}
       </div>
       <nav>
         <ul>

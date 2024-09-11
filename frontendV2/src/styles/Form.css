@@ -28,6 +28,7 @@
   
   /* Button container */
   .button-container {
+    padding: 10px;
     display: flex;
     justify-content: flex-end; /* Align buttons to the right */
     gap: 10px;

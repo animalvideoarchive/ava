@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import '../styles/VideoSelection.css';
+import useFormContext from "../hooks/useFormContext";  
 
 function VideoSelection() {
-  const [files, setFiles] = useState([]);
+  const { files, setFiles, setNumFiles} = useFormContext();
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
@@ -35,19 +36,24 @@ function VideoSelection() {
           files.map((file, index) => (
             <div key={index} className="video-item">
               <span className="file-icon">&#128253;</span> {/* Camera icon */}
-              <span className="file-name">{file.name}</span>
-              <button onClick={() => removeFile(index)} className="remove-button">X</button>
+              <span className="file-name" data-title={file.name}>{file.name}</span>
+              <button onClick={() => removeFile(index)} className="remove-file-button">X</button>
             </div>
           ))
         ) : (
           <>
-            <p>Drag and drop files here</p>
-            <p>or <label htmlFor="fileInput" className="browse-link">browse</label> to upload</p>
+            <p>Drag and drop files here or <label htmlFor="fileInput" className="browse-link">browse</label> to upload</p>
           </>
         )}
       </div>
-      {files.length > 0 && (
+      {files.length > 0 && files.length < 20 &&(
         <label htmlFor="fileInput" className="add-button">+ Add More Files</label>
+      )}
+      {files.length == 20  &&(
+        <div className="limit-warning">Limit exceeded! You can only upload 20 videos in a batch. Remove above selected file to add different files</div>
+      )}
+      {files.length > 20  &&(
+        <div className="limit-warning">First 20 queued! rest-excluded due to 20-item limit. Remove selected file to add differnt files</div>
       )}
       <input
         type="file"
@@ -56,10 +62,9 @@ function VideoSelection() {
         style={{ display: 'none' }}
         id="fileInput"
       />
-      {/* <div className="button-group">
-        <button className="back-button">Back</button>
-        <button className="next-button" disabled={!files.length}>Next</button>
-      </div> */}
+      <div className={files.length == 0 ? "text-display" : "not-text-dispaly" } >
+
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import RequiredTags2 from "./RequiredTags2";
 import OptionalTags1 from "./OptionalTags1";
 import OptionalTags2 from "./OptionalTags2";
 import VideoUpload from "./VideoUpload";
-
+import '../styles/index.css'
 const FormInputs = () => {
 
     const { page } = useFormContext()
@@ -20,7 +20,8 @@ const FormInputs = () => {
     }
 
     const content = (
-        <div className="form-inputs flex-col">
+        
+        <div>
             {display[page]}
         </div>
     )

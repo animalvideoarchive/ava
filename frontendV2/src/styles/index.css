@@ -1,0 +1,56 @@
+.header {
+    display: flex;
+    align-items: center;  /* Ensures vertical centering */
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;  /* Aligns the logo image and text vertically */
+  }
+  
+  .logo img {
+    height: 60px;  /* Adjust height as needed to fit your design */
+    width: auto;  /* Keeps the aspect ratio of the image */
+    margin-right: 10px;
+    background-color: transparent;
+  }
+  
+  .logo span {
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    align-items: center;  /* Ensures items in the nav are aligned with the logo */
+  }
+  
+  nav ul li {
+    margin-left: 20px;
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  nav ul li:hover {
+    color: #ffc107;
+  }
+  
+  nav ul li.active {
+    color: #ffc107;
+    font-weight: bold;
+  }
+  
+  .form-inputs {
+    background-color: antiquewhite;
+  }
+
+  .main-body{
+    background-color: #ffc107;
+  }

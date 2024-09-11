@@ -1,0 +1,75 @@
+.video-upload-summary {
+    width: 80%;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.upload-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+.file-name {
+    flex: 1;
+}
+
+.progress-bar-container {
+    width: 60%;
+    height: 20px;
+    background-color: #eee;
+    position: relative;
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.4s ease-in-out;
+}
+
+.progress-percent {
+    position: absolute;
+    right: 5px;
+    top: 2px;
+    color: black;
+    font-weight: bold;
+}
+
+.file-status-icon {
+    width: 30px;
+    text-align: center;
+    font-size: 16px;
+    color: green;
+}
+
+.upload-stats {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.upload-success {
+    color: #4CAF50;
+}
+
+.upload-failed {
+    color: #f44336;
+}
+
+.back-home-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
