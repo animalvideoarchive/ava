@@ -40,7 +40,29 @@ const Form = () => {
 
     const handleNext = () => {
         if (page === 0) {
-            setModalTagsOpen(true);
+            if (files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+            else{
+                setModalTagsOpen(true);
+            }
+        }
+        else if (page === 1) {
+            if (data.contactEmail === '' || data.commonName === '' || data.contactFirstName === '' || data.contactLastName === '' || data.briefVideoDescription === '') {
+                alert('Please fill in all required fields');
+            }
+            else{
+                setPage(prev => prev + 1)
+            }
+        }
+        else if (page === 2) {
+            if (data.videoLocation === '' || data.animalVisibility === '' || data.videoContext.length === 0 || data.dataCollectionStatus === '' || data.videoFormat === '') {
+                alert('Please fill in all required fields');
+            }
+            else{
+                setPage(prev => prev + 1)
+            }
         }
         else if (page === 4) {
             // Trigger some special action, like opening a modal for video upload confirmation
@@ -70,11 +92,6 @@ const Form = () => {
         setStartUpload(true)
     };
 
-    const handleSubmit = e => {
-        e.preventDefault()
-        console.log(JSON.stringify(data))
-    }
-
 
     const content = (
         // <form className="form flex-col" onSubmit={handleSubmit}>
@@ -82,7 +99,7 @@ const Form = () => {
             <Header /> 
 
             <ProgressBar/>
-
+            
             <FormInputs />
 
             <div className="button-container">

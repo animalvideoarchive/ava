@@ -6,15 +6,12 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
-
-const steps = [
-  'Select master blaster campaign settings',
-  'Create an ad group',
-  'Create an ad',
-];
+import { titleList } from "../constants/constants"
 
 function ProgressBar() {
-    const {page, titleList } = useFormContext();
+    const {page } = useFormContext();
+
+    if (page === 5 || page === 6) return null;
 
     return (
         <Box sx={{ width: '100%', }} >

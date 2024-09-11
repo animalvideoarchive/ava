@@ -16,8 +16,6 @@ export const FormProvider = ({ children }) => {
         5: 'Uploaded Video'
     }
 
-    const titleList = ['Select Video', 'Required Tags 1', 'Required Tags 2', 'Optional Tags 1', 'Optional Tags 2', 'Uploaded Video']
-
     const [files, setFiles] = useState([])
     
     const [numFiles, setNumFiles] = useState(0)
@@ -117,7 +115,7 @@ export const FormProvider = ({ children }) => {
     const submitHide = page !== Object.keys(title).length - 1 && "remove-button"
 
     return (
-        <FormContext.Provider value={{files, title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext, prevHide, nextHide, submitHide, numFiles, setNumFiles, setFiles, startUpload, setStartUpload, titleList}}>
+        <FormContext.Provider value={{files, title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext, prevHide, nextHide, submitHide, numFiles, setNumFiles, setFiles, startUpload, setStartUpload}}>
             {children}
         </FormContext.Provider>
     )

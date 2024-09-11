@@ -22,14 +22,14 @@ const RequiredTags1 = () => {
                 
                 <div className="flex-col">
                     <label htmlFor="commonName">Common Name <span className="required">*</span>
-                        <span className="tooltip" title="A common name that represents you or your organization.">?</span>
+                        <span className="tooltip" title="Please use the IUCN red list for consistency of names.">?</span>
                     </label>
                     <input
                         type="text"
                         id="commonName"
                         name="commonName"
                         placeholder="Enter common name"
-                        // pattern="[\w\s]{2,}"
+                        pattern="[\w\s]{2,}"
                         required
                         value={data.commonName}
                         onChange={handleChange}
@@ -44,7 +44,7 @@ const RequiredTags1 = () => {
                             id="contactFirstName"
                             name="contactFirstName"
                             placeholder="First Name"
-                            // pattern="([A-Z])[\w+.]{1,}"
+                            pattern="([A-Z])[\w+.]{1,}"
                             required
                             value={data.contactFirstName}
                             onChange={handleChange}
@@ -54,7 +54,7 @@ const RequiredTags1 = () => {
                             id="contactLastName"
                             name="contactLastName"
                             placeholder="Last Name"
-                            // pattern="([A-Z])[\w+.]{1,}"
+                            pattern="([A-Z])[\w+.]{1,}"
                             required
                             value={data.contactLastName}
                             onChange={handleChange}
@@ -64,15 +64,18 @@ const RequiredTags1 = () => {
             </div>
 
             <div className="flex-col-right">
-                <label htmlFor="videoDescription">Brief description of video(s) <span className="required">*</span></label>
-                <textarea
-                    id="videoDescription"
-                    name="videoDescription"
-                    placeholder="Describe the video(s)"
-                    required
-                    value={data.briefVideoDescription}
-                    onChange={handleChange} >
-                </textarea>
+                <div className="flex-col">
+                    <label htmlFor="briefVideoDescription">Brief description of video(s) <span className="required">*</span></label>
+                        <textarea
+                        type="text"
+                        id="briefVideoDescription"
+                        name="briefVideoDescription"
+                        placeholder="Describe the video(s)"
+                        required
+                        value={data.briefVideoDescription}
+                        onChange={handleChange}                
+                    />
+                </div>
             </div>
         </div>
     )
