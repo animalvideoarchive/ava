@@ -2,6 +2,8 @@
 // Also need to add the logic of file upload in the FormContext
 
 import { createContext, useState, useEffect } from "react"
+import { baseUrl, partSize, numUploads, transferAcceleration } from "../constants/constants"
+import { Uploader } from "../utils/upload"
 
 const FormContext = createContext({})
 
@@ -20,9 +22,13 @@ export const FormProvider = ({ children }) => {
     
     const [numFiles, setNumFiles] = useState(0)
 
-    const [startUpload, setStartUpload] = useState(false)
-
     const [page, setPage] = useState(0)
+
+    const [pgvalues, setPgvalues] = useState({})
+    
+    const [perfs, setPerfs] = useState({})
+    
+    const [errors, setErrors] = useState({});
 
     const [data, setData] = useState({
         contactEmail: "",
@@ -81,41 +87,47 @@ export const FormProvider = ({ children }) => {
           }));
         }  
     }
+  
+    const handleFileUpload = async () => {
+        for (const file of files) {
 
-    const {
-        billAddress2,
-        sameAsBilling,
-        shipAddress2,
-        optInNews,
-        ...requiredInputs } = data
+            const uploaderOptions = {
+                file: file,
+                baseURL: baseUrl,
+                chunkSize: partSize,
+                threadsQuantity: numUploads,
+                useTransferAcceleration: transferAcceleration 
+            }
 
-    const canSubmit = [...Object.values(requiredInputs)].every(Boolean) && page === Object.keys(title).length - 1
+            const uploader = new Uploader(uploaderOptions)
+            const tBegin = performance.now()      
 
-    const canNextPage1 = Object.keys(data)
-        .filter(key => key.startsWith('bill') && key !== 'billAddress2')
-        .map(key => data[key])
-        .every(Boolean)
+            uploader.onProgress(({ percentage }) => {
+                console.log("In progress for", file.name, percentage)
+                setPgvalues(prev => ({...prev, [file.name]: percentage}))
+                if (percentage === 100) {
+                    setPerfs(prev => ({...prev, [file.name]: (performance.now() - tBegin)/1000}))
+                  }        
+            }).onError((error) => {
+                console.error(`Error uploading ${file.name}:`, error)
+                setErrors(prev => ({ ...prev, [file.name]: error.message }));
+                setPgvalues(prev => ({...prev, [file.name]: 0}))
+            });
 
-    const canNextPage2 = Object.keys(data)
-        .filter(key => key.startsWith('ship') && key !== 'shipAddress2')
-        .map(key => data[key])
-        .every(Boolean)
-
-    const disablePrev = page === 0
-
-    const disableNext =
-        (page === Object.keys(title).length - 1)
-        || (page === 0 && !canNextPage1)
-        || (page === 1 && !canNextPage2)
-
-    const prevHide = page === 0 && "remove-button"
-
-    const nextHide = page === Object.keys(title).length - 1 && "remove-button"
-
-    const submitHide = page !== Object.keys(title).length - 1 && "remove-button"
+            try {
+                console.log("Starting try upload for", file.name)
+                await uploader.start();
+            } catch (error) {
+                console.error(`File uploading failed in catch for await ${file.name}:`, error)
+            }
+            console.log("Finished uploading", file.name)
+        }
+        console.log(pgvalues)
+        console.log(perfs)
+    };
 
     return (
-        <FormContext.Provider value={{files, title, page, setPage, data, setData, canSubmit, handleChange, disablePrev, disableNext, prevHide, nextHide, submitHide, numFiles, setNumFiles, setFiles, startUpload, setStartUpload}}>
+        <FormContext.Provider value={{files, title, page, setPage, data, setData, handleChange, numFiles, setNumFiles, setFiles, handleFileUpload, pgvalues, perfs,  errors}}>
             {children}
         </FormContext.Provider>
     )

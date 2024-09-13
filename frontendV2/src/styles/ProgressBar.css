@@ -1,9 +1,7 @@
 .css-8atqhb {
-    /* width: 60%; */
     margin-top: 20px;
     margin-bottom: 20px;
     align-self: center;
-    /* color: #f8a228; */
 }
 
 .css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
@@ -17,10 +15,3 @@
 .MuiStepIcon-root.Mui-active{
     color: #f8a228;
 }
-
-/* 
-.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed
-.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-active
-
-
-*/

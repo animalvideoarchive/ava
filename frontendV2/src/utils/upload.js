@@ -36,6 +36,7 @@ export class Uploader {
 
   start() {
     console.log("Start")
+    console.log("Threads Quantity: ", this.threadsQuantity)
     // this.initialize()
     // Return a promise that resolves when the upload is complete
     this.uploadPromise = new Promise((resolve, reject) => {
@@ -53,7 +54,7 @@ export class Uploader {
     try {
       // adding the the file extension (if present) to fileName
       let fileName = this.file.name
-      console.log("File Name: ", fileName)
+      console.log("File Name in initialize: ", fileName)
       // initializing the multipart request
       const videoInitializationUploadInput = {
         name: fileName,
@@ -93,6 +94,7 @@ export class Uploader {
 
       this.sendNext()
     } catch (error) {
+      console.log("Error in initialize: ", error)
       await this.complete(error)
     }
   }
@@ -135,7 +137,7 @@ export class Uploader {
             const wait = (ms) => new Promise((res) => setTimeout(res, ms));
             //exponential backoff retry before giving up
             console.log(`File ${this.fileKey} Part#${part.PartNumber} failed to upload, backing off ${2 ** retry * 500} before retrying...`)
-            console.log("All uploadedParts done in error: ",this.uploadedParts)
+            console.log("in retry code, All uploadedParts done till now : ",this.uploadedParts)
             wait(2 ** retry * 500).then(() => {              
               this.parts.push(part)
               this.sendNext(retry)
@@ -151,11 +153,13 @@ export class Uploader {
   async complete(error) {
     if (error && !this.aborted) {
       this.onErrorFn(error)
+      this.rejectUpload(error);
       return
     }
 
     if (error) {
       this.onErrorFn(error)
+      this.rejectUpload(error);
       return
     }
 
@@ -241,7 +245,7 @@ export class Uploader {
       }      
       if (this.fileId && this.fileKey) {
         if(!window.navigator.onLine)
-          reject(new Error("System is offline"))
+          reject(new Error("System is offline upload window navigator check"))
 
         const xhr = (this.activeConnections[part.PartNumber - 1] = new XMLHttpRequest())
         xhr.timeout = this.timeout
@@ -268,7 +272,8 @@ export class Uploader {
               }
 
               this.uploadedParts.push(uploadedPart)
-              console.log("All uploadedParts done: ",this.uploadedParts)
+              console.log("Part uploaded till now: ",this.uploadedParts)
+              console.log("Time now ", new Date().toString())
               resolve(xhr.status)
               delete this.activeConnections[part.PartNumber - 1]
               window.removeEventListener('offline', abortXHR)

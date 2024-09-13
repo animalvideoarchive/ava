@@ -14,19 +14,15 @@ const Form = () => {
         page,
         setPage,
         data,
-        title,
-        canSubmit,
         disablePrev,
         disableNext,
         prevHide,
         nextHide,
-        submitHide,
         numFiles,
         setNumFiles,
-        setStartUpload
+        handleFileUpload
     } = useFormContext()
-    console.log("Title: ", title)
-    console.log(page)
+
     const handlePrev = () => setPage(prev => prev - 1)
 
     useEffect(() => {
@@ -36,6 +32,8 @@ const Form = () => {
 
     const [isModalTagsOpen, setModalTagsOpen] = React.useState(false);
    
+    const [isButtonDisply, setButtonDisply] = React.useState(true);
+
     const [isVideoSubmitPopupOpen, setVideoSubmitPopupOpen] = React.useState(false);
 
     const handleNext = () => {
@@ -65,7 +63,6 @@ const Form = () => {
             }
         }
         else if (page === 4) {
-            // Trigger some special action, like opening a modal for video upload confirmation
             setVideoSubmitPopupOpen(true);
         }
         else{
@@ -87,29 +84,28 @@ const Form = () => {
         console.log(JSON.stringify(data));
         // Perform upload logic here
         setVideoSubmitPopupOpen(false);
-        // handleFileUpload();
-        setPage(prev => prev + 1)
-        setStartUpload(true)
+        setButtonDisply(false)
+        handleFileUpload();
+        setPage(prev => prev + 1)        
     };
 
 
     const content = (
-        // <form className="form flex-col" onSubmit={handleSubmit}>
         <div>
             <Header /> 
 
             <ProgressBar/>
-            
+
             <FormInputs />
 
+            {isButtonDisply && (
             <div className="button-container">
 
                 <button type="button" className={`button ${prevHide}`} onClick={handlePrev} disabled={disablePrev}>Prev</button>
 
                 <button type="button" className={`button ${nextHide}`} onClick={handleNext} disabled={disableNext}>Next</button>
-                
-                {/* <button type="submit" className={`button ${submitHide}`} disabled={!canSubmit}>Submit</button> */}
             </div>
+            )}
 
             {isModalTagsOpen && (
             <AssocaiateTagsWithVideosPopUp 
