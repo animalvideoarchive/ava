@@ -58,7 +58,7 @@ const AdminDashboard = () => {
           pt: 8, // Add padding top to move content higher
         }}
       >
-        <Typography variant="h4" component="h1" sx={{ mb: 4, marginBottom:"70px" }}>
+        <Typography variant="h4" component="h1" sx={{ mb: 4, marginTop:"30px" ,marginBottom:"90px" }}>
           Welcome Admin!
         </Typography>
         
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
 
           <Box 
             sx={{ 
-              width: 0.01, 
+              width: 0.005, 
               height: 100, // Reduced height
               mx: 4,
               marginLeft: "70px",
