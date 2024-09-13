@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import FormInputs from './FormInputs'
 import useFormContext from "../hooks/useFormContext"
 import Header from './Header'
-import '../styles/Form.css'
 import VideoSubmitPopup from './VideoSubmitPopup'; // Importing the modal component
 import AssocaiateTagsWithVideosPopUp from './AssocaiateTagsWithVideosPopUp'; // Importing the modal component
 import ProgressBar from './ProgressBar'; // Importing the progress bar component

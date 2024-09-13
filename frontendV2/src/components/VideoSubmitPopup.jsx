@@ -1,5 +1,4 @@
 import React from 'react';
-import "../styles/VideoSubmitPopup.css";
 import useFormContext from "../hooks/useFormContext";  // Make sure this hook is properly defined to manage form state
 
 const VideoSubmitPopup = ({ isOpen, onClose, onConfirm }) => {

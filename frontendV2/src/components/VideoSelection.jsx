@@ -1,7 +1,6 @@
 /// need to move the file storage logic to FormContext.
 
 import React, { useState } from 'react';
-import '../styles/VideoSelection.css';
 import useFormContext from "../hooks/useFormContext";  
 import { Grid, Box, Typography, LinearProgress, IconButton, Tooltip } from '@mui/material';
 import MovieIcon from '@mui/icons-material/Movie';

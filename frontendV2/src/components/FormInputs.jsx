@@ -5,7 +5,7 @@ import RequiredTags2 from "./RequiredTags2";
 import OptionalTags1 from "./OptionalTags1";
 import OptionalTags2 from "./OptionalTags2";
 import VideoUpload from "./VideoUpload";
-import '../styles/index.css'
+import '../index.css'
 const FormInputs = () => {
 
     const { page } = useFormContext()

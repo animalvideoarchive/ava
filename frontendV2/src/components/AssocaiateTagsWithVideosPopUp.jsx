@@ -1,6 +1,6 @@
 import React from 'react';
 import useFormContext from "../hooks/useFormContext";  // Make sure this hook is properly defined to manage form state
-import "../styles/AssocaiateTagsWithVideosPopUp.css";
+import "../index.css";
 
 const AssocaiateTagsWithVideosPopUp = ({ isOpen, onClose, onConfirm }) => {
     const { numFiles } = useFormContext();

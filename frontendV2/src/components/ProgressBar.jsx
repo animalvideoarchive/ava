@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import '../styles/ProgressBar.css'; // Ensure the CSS file is linked correctly
 import useFormContext from "../hooks/useFormContext"
 
 import Box from '@mui/material/Box';

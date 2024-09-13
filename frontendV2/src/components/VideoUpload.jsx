@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Uploader } from "../utils/upload"
 import useFormContext from "../hooks/useFormContext"; 
-import { baseUrl, partSize, numUploads, transferAcceleration } from "../constants/constants"
-import '../styles/VideoUpload.css';
 import { Grid, Box, Typography, LinearProgress, IconButton, Tooltip } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

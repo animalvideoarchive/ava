@@ -1,5 +1,4 @@
 import useFormContext from "../hooks/useFormContext"
-import '../styles/RequiredTags1.css'
 
 const RequiredTags1 = () => {
     const { data, handleChange } = useFormContext()

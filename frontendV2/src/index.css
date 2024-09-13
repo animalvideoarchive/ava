@@ -14,10 +14,12 @@ code {
 
 .header {
   background-color: #f3f0e8;
-  padding: 20px;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
 }
 
 .logo {
@@ -25,15 +27,44 @@ code {
   align-items: center;
 }
 
+.logo span {
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+}
+
+
 .logo img {
-  height: 50px;
+  height: 60px;  /* Adjust height as needed to fit your design */
+  width: auto;  /* Keeps the aspect ratio of the image */
   margin-right: 10px;
+  background-color: transparent;
+
 }
 
 nav ul {
   list-style: none;
   display: flex;
+  padding: 0;
+  align-items: center;  /* Ensures items in the nav are aligned with the logo */
   gap: 20px;
+}
+
+
+nav ul li {
+  margin-left: 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+nav ul li:hover {
+  color: #ffc107;
+}
+
+nav ul li.active {
+  color: #ffc107;
+  font-weight: bold;
 }
 
 nav li {
@@ -137,4 +168,531 @@ nav li.active {
   cursor: not-allowed;
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* Dim the background */
+  z-index: 1000; /* High z-index to ensure it's on top */
+}
 
+.modal-content {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+  width: 50%;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-button.back {
+  background-color: #f1f1f1;
+}
+
+.modal-button.confirm {
+  background-color: #f8a228;
+  color: white;
+}
+
+/* Form container */
+.form-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Form content */
+.form-content {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Form header styling */
+.form-header {
+  margin-bottom: 20px;
+}
+
+.form-header h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+/* Button container */
+.button-container {
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 10px;
+}
+
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Specific button styles */
+.button.prevHide {
+  background-color: #ccc;
+}
+
+.button.nextHide {
+  background-color: #ccc;
+}
+
+.button.submitHide {
+  background-color: #ffcc00;
+  color: white;
+}
+
+/* Disable button styling */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Progress bar styling */
+.progress-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* Stepper styles (e.g., circles and lines) */
+.step {
+  width: 100px;
+  height: 100px;
+}
+
+.css-8atqhb {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-self: center;
+}
+
+.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
+  color: #f8a228;
+}
+
+.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+  color: #f8a228;
+}
+
+.MuiStepIcon-root.Mui-active{
+  color: #f8a228;
+}
+
+/* General container styles */
+.split-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  background-color: #f6f4ee;
+  padding-bottom: 50px;
+  padding-top: 50px;
+  padding-left: 50px;
+  padding-right: 50px;
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* Column styles */
+.flex-col-left,
+.flex-col-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+/* Name split fields */
+.split-name {
+  display: flex;
+  gap: 10px;
+}
+
+/* Input and Textarea styles */
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+
+/* Textarea specific styles */
+textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+/* Label styles */
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 15px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Required asterisk styling */
+.required {
+  color: red;
+}
+
+
+/* Tooltip styling */
+.tooltip {
+  display: inline-block;
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: normal;
+  color: #555;
+  font-size: 12px;
+  border-bottom: 1px dotted #555;
+  text-decoration: none;
+  position: relative;
+}
+
+.tooltip:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: #333;
+  color: #fff;
+  padding: 5px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 10;
+  margin-top: 5px;
+}
+
+/* Input field focus */
+input:focus,
+textarea:focus {
+  border-color: #0066cc;
+  outline: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .split-container {
+      flex-direction: column;
+  }
+  
+  .split-name {
+      flex-direction: column;
+  }
+}
+
+
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: auto;
+  gap: 50px;
+  background-color: #f6f4ee;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.form-section {
+  display: flex;
+}
+
+.form-column {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.options{
+  padding-top: 10px;
+}
+
+input[type="text"], input[type="radio"], input[type="checkbox"], textarea {
+  margin-top: 5px;
+  vertical-align: bottom;
+  accent-color: orange;
+}
+
+input[type="radio"], input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+
+.uploader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f6f4ee; /* Matching background color */
+}
+
+.drop-zone, .file-display {
+  width: 60%;
+  /* height: 50vh; */
+  min-height: 45vh;
+  border: 2px dashed #aaa; /* Adding border */
+  border-radius: 10px;
+  /* background-color: #fdfcf8;  */
+  position: relative; /* To position text in corners */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 20px; /* Add some padding to the drop zone */
+  margin-top: 20px;
+  flex-direction: column;
+}
+
+.drop-zone {
+  background-color: white;
+    /* min-height: 350px; */
+    min-height: 45vh;
+
+}
+
+.drop-zone::before {
+  content: '';
+  background-image: '/Users/et/Desktop/ASU_CIC/St-Louis-Zoo/frontendV2/src/assets/logo.png';
+/* Add your upload image path here */
+  background-size: 100px;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  opacity: 0.2; /* Transparency for the image */
+}
+
+.drop-zone p, .browse-link {
+  z-index: 2; /* Keeping the text above the background image */
+}
+
+.drop-zone:hover {
+  border-color: #f8a228; /* Highlight the drop-zone when hovered */
+}
+
+.file-display {
+  width: 100%;
+  gap: 10px;
+  align-items: start;
+  text-align: left;
+  max-height: 800px;
+  border: none; /* Removing the border when displaying files */
+  justify-content: flex-start;
+
+}
+
+.add-button {
+  cursor: pointer;
+  padding: 10px 20px;
+  border: 2px solid #ccc;
+  background-color: #fff;
+  margin-top: 10px;
+  align-self: flex-start;
+}
+
+.drop-zone::after {
+  content: "Max 20 videos in a batch";
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 13px;
+  color: #888;
+} 
+
+/* Buttons */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.back-button, .next-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.next-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.limit-warning {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  padding: .75rem 1.25rem;
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  font-size: 1rem;
+  align-self: flex-start;
+
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  width: 50%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-button.back {
+  background-color: #f1f1f1;
+}
+
+.modal-button.confirm {
+  background-color: #ffc107;
+  color: white;
+}
+
+.video-upload-summary {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+}
+
+.upload-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 25px;
+
+}
+
+.stats-content {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  background: #f6f4ee;
+  padding: 20px;
+}
+
+.video-header{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.upload-success {
+  color: #4CAF50;
+}
+
+.upload-failed {
+  color: #f44336;
+}
+
+.back-home-button {
+  display: block;
+  /* width: 100%; */
+  padding: 10px;
+  padding-left: 10px;
+  background-color: #f8a228;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center
+}
