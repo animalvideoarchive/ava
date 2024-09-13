@@ -36,7 +36,7 @@ const Form = () => {
     const [isVideoSubmitPopupOpen, setVideoSubmitPopupOpen] = React.useState(false);
 
     const handleNext = () => {
-        if (page === 0) {
+        if (page === 1) {
             if (files.length === 0) {
                 alert('Please select a file to upload');
                 return;
@@ -45,7 +45,7 @@ const Form = () => {
                 setModalTagsOpen(true);
             }
         }
-        else if (page === 1) {
+        else if (page === 2) {
             if (data.contactEmail === '' || data.commonName === '' || data.contactFirstName === '' || data.contactLastName === '' || data.briefVideoDescription === '') {
                 alert('Please fill in all required fields');
             }
@@ -53,7 +53,7 @@ const Form = () => {
                 setPage(prev => prev + 1)
             }
         }
-        else if (page === 2) {
+        else if (page === 3) {
             if (data.videoLocation === '' || data.animalVisibility === '' || data.videoContext.length === 0 || data.dataCollectionStatus === '' || data.videoFormat === '') {
                 alert('Please fill in all required fields');
             }
@@ -61,7 +61,7 @@ const Form = () => {
                 setPage(prev => prev + 1)
             }
         }
-        else if (page === 4) {
+        else if (page === 5) {
             setVideoSubmitPopupOpen(true);
         }
         else{

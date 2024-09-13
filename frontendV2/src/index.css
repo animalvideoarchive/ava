@@ -696,3 +696,23 @@ input[type="radio"], input[type="checkbox"] {
   cursor: pointer;
   align-self: center
 }
+
+.admin-button {
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.css-bd1jce{
+  width: 1%;
+}
+
+.MuiTypography-root{
+  font-size: 1rem;
+  padding-left: 40px;
+}
+
+.a-remove-button{
+  display: none;
+}

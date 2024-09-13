@@ -10,7 +10,7 @@ import { titleList } from "../constants/constants"
 function ProgressBar() {
     const {page } = useFormContext();
 
-    if (page === 5 || page === 6) return null;
+    if (page ==0 || page === 6) return null;
 
     return (
         <Box sx={{ width: '100%', }} >

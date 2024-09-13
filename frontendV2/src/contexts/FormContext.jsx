@@ -134,8 +134,10 @@ export const FormProvider = ({ children }) => {
 
     const prevHide = page === 0 && "a-remove-button"
 
+    const nextHide = page === 0 && "a-remove-button"
+
     return (
-        <FormContext.Provider value={{files, title, page, setPage, data, setData, handleChange, disablePrev, prevHide, numFiles, setNumFiles, setFiles, handleFileUpload, pgvalues, perfs,  errors}}>
+        <FormContext.Provider value={{files, title, page, setPage, data, setData, handleChange, disablePrev, prevHide, nextHide, numFiles, setNumFiles, setFiles, handleFileUpload, pgvalues, perfs,  errors}}>
             {children}
         </FormContext.Provider>
     )
