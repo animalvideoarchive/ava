@@ -42,11 +42,15 @@ export const FormProvider = ({ children }) => {
         dataCollectionStatus: "",
         videoFormat: "",
         researchApproval: "",
-        scientificName: "",
         animalIDs: "",
-        covariateData: "",
-        otherData: "",
         otherDataDetails: "",
+        scientificName: "",
+        covariateData: "",
+        behavioralEffects: "",
+        groupSize: "",
+        sexOfAnimals: "",
+        ageOfIndividuals: "",
+        publications: ""
     })
       
     const handleChange = e => {
@@ -89,6 +93,7 @@ export const FormProvider = ({ children }) => {
     }
   
     const handleFileUpload = async () => {
+        console.log("Metadata", data)
         for (const file of files) {
 
             const uploaderOptions = {
@@ -103,7 +108,6 @@ export const FormProvider = ({ children }) => {
             const tBegin = performance.now()      
 
             uploader.onProgress(({ percentage }) => {
-                console.log("In progress for", file.name, percentage)
                 setPgvalues(prev => ({...prev, [file.name]: percentage}))
                 if (percentage === 100) {
                     setPerfs(prev => ({...prev, [file.name]: (performance.now() - tBegin)/1000}))

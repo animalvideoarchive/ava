@@ -244,8 +244,10 @@ export class Uploader {
         window.removeEventListener('offline', abortFx)    
       }      
       if (this.fileId && this.fileKey) {
-        if(!window.navigator.onLine)
-          reject(new Error("System is offline upload window navigator check"))
+        if(!window.navigator.onLine){
+          reject(new Error("System is offline"))
+          return 
+        }
 
         const xhr = (this.activeConnections[part.PartNumber - 1] = new XMLHttpRequest())
         xhr.timeout = this.timeout
