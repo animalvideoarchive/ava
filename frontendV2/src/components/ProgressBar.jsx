@@ -14,7 +14,7 @@ function ProgressBar() {
 
     return (
         <Box sx={{ width: '100%', }} >
-          <Stepper activeStep={page} alternativeLabel 
+          <Stepper activeStep={page-1} alternativeLabel 
            sx={{
             color: '#f8a228',
             '& .MuiStepIcon-root.Mui-active': {
