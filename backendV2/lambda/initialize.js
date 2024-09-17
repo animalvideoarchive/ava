@@ -17,6 +17,7 @@ exports.handler = async (event) => {
 	const multipartParams = {
 		Bucket: BUCKET_NAME,
 		Key: body.name,
+		Metadata: body.metadata
 	}
 	const command = new CreateMultipartUploadCommand(multipartParams);
 	const multipartUpload = await s3.send(command);

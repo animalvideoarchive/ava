@@ -94,14 +94,35 @@ export const FormProvider = ({ children }) => {
   
     const handleFileUpload = async () => {
         console.log("Metadata", data)
+        const sanitizeString = (str) => {
+          return String(str).replace(/[\n\r\t]/g, ' ').replace(/[^ -~]+/g, '').trim();
+        };
+    
+        const sanitizedData = Object.keys(data).reduce((acc, key) => {
+            const keysToSanitize = ['briefVideoDescription', 'otherDataDetails', 'behavioralEffects'];
+    
+            if (keysToSanitize.includes(key)) {
+                acc[key] = sanitizeString(data[key]);
+            } else if (key !== 'otherData') {
+                if (key === 'videoContext') {
+                    acc[key] = data[key].join(', ');
+                } else {
+                    acc[key] = data[key];
+                }
+            }
+            return acc;
+        }, {});
+        console.log(JSON.stringify(sanitizedData));
+        console.log("Sanitized data ",sanitizedData); 
+      
         for (const file of files) {
-
             const uploaderOptions = {
                 file: file,
                 baseURL: baseUrl,
                 chunkSize: partSize,
                 threadsQuantity: numUploads,
-                useTransferAcceleration: transferAcceleration 
+                useTransferAcceleration: transferAcceleration,
+                metadata: sanitizedData
             }
 
             const uploader = new Uploader(uploaderOptions)

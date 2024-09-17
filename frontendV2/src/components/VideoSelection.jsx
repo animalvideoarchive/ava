@@ -86,7 +86,7 @@ function VideoSelection() {
       {files.length > 0 && files.length < 20 &&(
         <label htmlFor="fileInput" className="add-button">+ Add More Files</label>
       )}
-      {files.length == 20  &&(
+      {files.length === 20  &&(
         <div className="limit-warning">Limit exceeded! You can only upload 20 videos in a batch. Remove above selected file to add different files</div>
       )}
       {files.length > 20  &&(
@@ -99,7 +99,7 @@ function VideoSelection() {
         style={{ display: 'none' }}
         id="fileInput"
       />
-      <div className={files.length == 0 ? "text-display" : "not-text-dispaly" } >
+      <div className={files.length === 0 ? "text-display" : "not-text-dispaly" } >
 
       </div>
     </div>

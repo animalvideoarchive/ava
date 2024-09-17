@@ -21,6 +21,7 @@ export class Uploader {
     this.timeout = 0
     this.file = options.file
     this.fileName = options.fileName
+    this.metadata = options.metadata
     this.aborted = false
     this.uploadedSize = 0
     this.progressCache = {}
@@ -58,6 +59,7 @@ export class Uploader {
       // initializing the multipart request
       const videoInitializationUploadInput = {
         name: fileName,
+          metadata: this.metadata
       }
       const initializeReponse = await api.request({
         url: "/initialize",
