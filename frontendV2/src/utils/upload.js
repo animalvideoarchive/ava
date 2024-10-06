@@ -59,7 +59,7 @@ export class Uploader {
       // initializing the multipart request
       const videoInitializationUploadInput = {
         name: fileName,
-          metadata: this.metadata
+        metadata: this.metadata
       }
       const initializeReponse = await api.request({
         url: "/initialize",

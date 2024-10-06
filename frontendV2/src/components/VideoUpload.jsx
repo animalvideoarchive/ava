@@ -1,5 +1,5 @@
 import useFormContext from "../hooks/useFormContext"; 
-import { Grid, Box, Typography, LinearProgress, IconButton, Tooltip } from '@mui/material';
+import { Grid, Box, Typography, LinearProgress, IconButton, Tooltip, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -18,6 +18,22 @@ function VideoUpload() {
         }
       };
     
+    const isUploadComplete = () => {
+        const successfulUploads = Object.values(pgvalues).filter(p => p === 100).length;
+        const failedUploads = Object.keys(errors).length;
+        return (successfulUploads + failedUploads) === files.length;
+    };
+
+    const isUploadInProgress = () => {
+        return Object.values(pgvalues).some(value => value > 0 && value < 100);
+    };
+
+    const handleBackClick = () => {
+        if (!isUploadInProgress()) {
+            window.location.href = '/';
+        }
+    };
+
 
     return (
         <div className="video-upload-summary">
@@ -28,7 +44,17 @@ function VideoUpload() {
                     <span className="upload-success">Successful: <b>{Object.values(pgvalues).filter(p => p === 100).length}</b></span>
                     <span className="upload-failed">Failed: <b>{Object.keys(errors).length}</b></span>
                 </div>
-                <button className="back-home-button" onClick={() => window.location.href = '/'}>Back to Home</button>
+                {/* Need to enable back button we need to inform user that file upload is in progress does they want to go back to home page */}
+                {/* <button className="back-home-button" onClick={() => window.location.href = '/'}>Back to Home</button> */}
+                <Tooltip title={isUploadComplete() ? "Back to Home" : "Upload in progress"}>
+                    <button
+                        className="back-home-button"
+                        onClick={handleBackClick}
+                        disabled={!isUploadComplete()}
+                    >
+                        Back to Home
+                    </button>
+                </Tooltip>
             </div>
 
             <Grid container spacing={2}>
