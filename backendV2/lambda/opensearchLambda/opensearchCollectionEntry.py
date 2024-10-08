@@ -19,7 +19,7 @@ auth = AWSV4SignerAuth(credentials, region, service)
 
 # create an opensearch client and use the request-signer
 client = OpenSearch(
-    hosts=[{'host': host, 'port': 443}],
+    hosts=[{'host': OPENSEARCH_COLLECTION_ENDPOINT, 'port': 443}],
     http_auth=auth,
     use_ssl=True,
     verify_certs=True,
