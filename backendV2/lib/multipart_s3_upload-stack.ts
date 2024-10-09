@@ -11,10 +11,12 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as ops from 'aws-cdk-lib/aws-opensearchserverless';
-import * as url from 'url';
+import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
+import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 
 export class MultipartS3UploadStack extends cdk.Stack {
-  public readonly searchDomain: string;
+  public readonly domainHost: string;
   
   constructor(scope: cdk.App, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -51,7 +53,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
         ],
         exposedHeaders: ['ETag'],
       }],
-      removalPolicy: cdk.RemovalPolicy.DESTROY
+      // removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
     // need to check this whitelisting
@@ -103,7 +105,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
       environment: {
         BUCKET_NAME: s3Bucket.bucketName
       },
-      functionName: `multipart-upload-initialize-${env}`
+      functionName: `multipart-upload-initialize-${env}`,
     });
 
     const getPreSignedUrlsLambda = new NodejsFunction(this, 'getPreSignedUrlsHandler', {
@@ -185,97 +187,58 @@ export class MultipartS3UploadStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // Create a VPC for the ECS Cluster
-    // const vpc = new ec2.Vpc(this, 'Vpc', {
-    //   maxAzs: 2 // Default is all AZs in the region
-    // });
-    const vpc = new ec2.Vpc(this, 'MyVpc', {
-      maxAzs: 2,
-      subnetConfiguration: [
-        {
-          cidrMask: 24,
-          name: 'Public',
-          subnetType: ec2.SubnetType.PUBLIC,
-        }
-      ],
-      natGateways: 0
-    });
-    
-    // TODO: Need to add cluster in private subnet
-    // Create an ECS Cluster
-    const cluster = new ecs.Cluster(this, 'EcsCluster', {
-      vpc,
-    });
-
-    const taskRole = new iam.Role(this, 'EcsTaskRole', {
-      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com')
-    });
-
-    s3Bucket.grantReadWrite(taskRole);
-    s3OutBucket.grantReadWrite(taskRole);
-
-    // Define Fargate Task Definition
-    const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
-      memoryLimitMiB: 512,
-      cpu: 256,
-      taskRole: taskRole // Assign the task role to the Fargate task
-    });
-
-    // Add container to the task definition
-    const container = taskDefinition.addContainer('MyContainer', {
-      image: ecs.ContainerImage.fromRegistry('nikhildocker7/ffmpegprocesing:latest'),
-      logging: new ecs.AwsLogDriver({
-        streamPrefix: 'ecs'
-      }),
-    });
-
-    // Expose a port (optional)
-    container.addPortMappings({
-      containerPort: 80,
-    });
 
     const commonNodeJSLambdaProps = {
       bundling: {
         externalModules: [
-          '@aws-sdk'        ],
+          '@aws-sdk'],
       },
       runtime: Runtime.NODEJS_18_X,
     };
     
+    // // Create a Lambda function to trigger the ECS task
+    // const lambdaFunction = new NodejsFunction(this, 'EcsTriggerLambda', {
+    //   ...commonNodeJSLambdaProps,
+    //   entry: join(__dirname, '../lambda/ecsTrigger.js'),
+    //   environment: {
+    //     CLUSTER_NAME: cluster.clusterName,
+    //     TASK_DEFINITION_ARN: taskDefinition.taskDefinitionArn,
+    //     // VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
+    //     VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
+    //     S3_OUT_BUCKET: s3OutBucket.bucketName,
+    //   },
+    //   functionName: `ecs-trigger-${env}`,
+    //   timeout: cdk.Duration.seconds(timeout),
+    // });
+
+    // // Grant Lambda permissions to run ECS tasks
+    // lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
+    //   actions: ['ecs:RunTask', 'ecs:DescribeTasks', 'iam:PassRole'],
+    //   resources: [taskDefinition.taskDefinitionArn, taskRole.roleArn],
+    // }));
+    
+    // // // Grant Lambda permissions to pass task role
+    // lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
+    //   actions: ['iam:PassRole'],
+    //   resources: ['*'],
+    //   conditions: {
+    //     StringLike: {
+    //       'iam:PassedToService': 'ecs-tasks.amazonaws.com'
+    //     }
+    //   }
+    // }));
+
     // Create a Lambda function to trigger the ECS task
-    const lambdaFunction = new NodejsFunction(this, 'EcsTriggerLambda', {
+    const stepTriggerLambda = new NodejsFunction(this, 'EcsTriggerLambda', {
       ...commonNodeJSLambdaProps,
       entry: join(__dirname, '../lambda/ecsTrigger.js'),
-      environment: {
-        CLUSTER_NAME: cluster.clusterName,
-        TASK_DEFINITION_ARN: taskDefinition.taskDefinitionArn,
-        // VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
-        VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
-        S3_OUT_BUCKET: s3OutBucket.bucketName,
-      },
-      functionName: `ecs-trigger-${env}`,
+      functionName: `step-trigger-${env}`,
       timeout: cdk.Duration.seconds(timeout),
     });
 
-    // Grant Lambda permissions to run ECS tasks
-    lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['ecs:RunTask', 'ecs:DescribeTasks', 'iam:PassRole'],
-      resources: [taskDefinition.taskDefinitionArn, taskRole.roleArn],
-    }));
-    
-    // // Grant Lambda permissions to pass task role
-    lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-      actions: ['iam:PassRole'],
-      resources: ['*'],
-      conditions: {
-        StringLike: {
-          'iam:PassedToService': 'ecs-tasks.amazonaws.com'
-        }
-      }
-    }));
 
     // Add an S3 event notification to trigger Lambda on object creation
-    s3Bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(lambdaFunction)); 
+    s3Bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(stepTriggerLambda)); 
 
     // Define the Lambda function
     const myClaudeLambda = new lambda.Function(this, 'MyClaudeLambda', {
@@ -283,6 +246,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
       code: lambda.Code.fromAsset('lambda'),  // directory containing 'app.py' and any other dependencies
       handler: 'getMetadataFromBedrockClaude.lambda_handler',  // file is 'app.py' and function is 'handler'
       functionName: `bedrock-claude-call-${env}`,
+      // environment: {
+      //   OUTPUT_BUCKET: s3OutBucket.bucketName,
+        
+      // }
     });
 
     myClaudeLambda.addToRolePolicy(new iam.PolicyStatement({
@@ -317,15 +284,21 @@ export class MultipartS3UploadStack extends cdk.Stack {
     });
     collection.addDependency(netPolicy);
 
-    const parsedDomainUrl = new url.URL(collection.attrCollectionEndpoint);
-    const domainHostname = parsedDomainUrl.hostname;
+    const extractDomainPart = (endpoint: any): string => {
+      console.log("endpoint", endpoint);
+      const match = endpoint.match(/^https?:\/\/([^/_]+)/);
+      return match ? match[1] : endpoint;
+    };
+
+    this.domainHost = extractDomainPart(collection.attrCollectionEndpoint);
+    console.log("domainHost", this.domainHost);
     
     new cdk.CfnOutput(this, 'DashboardEndpoint', {
       value: collection.attrDashboardEndpoint,
     });
 
     new cdk.CfnOutput(this, 'DashboardHost', {
-      value: domainHostname,
+      value: this.domainHost,
     });
 
     // Define the Lambda function
@@ -335,7 +308,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
       functionName: `opensearch-entry-creation-${env}`,
       code: lambda.Code.fromDockerBuild("lambda/opensearchLambda"),
       environment: {
-        COLLECTION_ENDPOINT : domainHostname,
+        COLLECTION_ENDPOINT : `${this.domainHost}`,
         INDEX_NAME : 'product-collection-index',
       },
       timeout: cdk.Duration.minutes(2),
@@ -352,5 +325,150 @@ export class MultipartS3UploadStack extends cdk.Stack {
       policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/product-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/product-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}"]}]`,
       type: 'data'
     });
+
+
+    // const stateMachine = new sfn.StateMachine(this, 'MyStateMachine', {
+    //   definition: new tasks.LambdaInvoke(this, "MyLambdaTask", {
+    //     lambdaFunction: helloFunction
+    //   }).next(new sfn.Succeed(this, "GreetedWorld"))
+    // });
+
+    // Step Function definition
+
+        // Create a VPC for the ECS Cluster
+    // const vpc = new ec2.Vpc(this, 'Vpc', {
+    //   maxAzs: 2 // Default is all AZs in the region
+    // });
+    const vpc = new ec2.Vpc(this, 'MyVpc', {
+      maxAzs: 2,
+      subnetConfiguration: [
+        {
+          cidrMask: 24,
+          name: 'Public',
+          subnetType: ec2.SubnetType.PUBLIC,
+        }
+      ],
+      natGateways: 0
+    });
+    
+    // TODO: Need to add cluster in private subnet
+    // Create an ECS Cluster
+    const cluster = new ecs.Cluster(this, 'EcsCluster', {
+      vpc,
+    });
+
+    const taskRole = new iam.Role(this, 'EcsTaskRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com')
+    });
+
+    s3Bucket.grantReadWrite(taskRole);
+    s3OutBucket.grantReadWrite(taskRole);
+
+    // Define Fargate Task Definition
+    const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
+      memoryLimitMiB: 512,
+      cpu: 256,
+      taskRole: taskRole, // Assign the task role to the Fargate task
+
+    });
+
+    // Add container to the task definition
+    const container = taskDefinition.addContainer('MyContainer', {
+      image: ecs.ContainerImage.fromRegistry('nikhildocker7/ffmpegprocesing:latest'),
+      logging: new ecs.AwsLogDriver({
+        streamPrefix: 'ecs'
+      }),
+      
+    });
+
+    // Expose a port (optional)
+    container.addPortMappings({
+      containerPort: 80,
+    });
+
+    const runEcsTask = new tasks.EcsRunTask(this, 'Run Video Processing', {
+      integrationPattern: stepfunctions.IntegrationPattern.RUN_JOB,
+      cluster,
+      taskDefinition,
+      launchTarget: new tasks.EcsFargateLaunchTarget(),
+      assignPublicIp: true,
+      containerOverrides: [
+        {
+          containerDefinition: taskDefinition.defaultContainer!,
+          environment: [
+            { name: 'S3_INPUT_BUCKET', value: stepfunctions.JsonPath.stringAt('$.s3Bucket') },
+            { name: 'S3_VIDEO_FILE_NAME', value: stepfunctions.JsonPath.stringAt('$.s3FileName') },
+            { name: 'S3_OUT_BUCKET', value: s3OutBucket.bucketName },
+          ],
+        },
+      ],  
+      resultPath: '$.ecsResult',
+    });
+
+    const invokeFirstLambda = new tasks.LambdaInvoke(this, 'Process Video Metadata', {
+      lambdaFunction: myClaudeLambda,
+      payload: stepfunctions.TaskInput.fromObject({
+        thumbnailStartPath: sfn.JsonPath.stringAt('$.ecsResult.thumbnailStartPath'),
+        thumbnailEndPath: sfn.JsonPath.stringAt('$.ecsResult.thumbnailEndPath'),
+        outputBucket: sfn.JsonPath.stringAt('$.ecsResult.outputBucket'),
+        clippedVideoPath: sfn.JsonPath.stringAt('$.ecsResult.clippedVideoPath'),
+      }),
+      resultPath: '$.firstLambdaResult'
+    });
+
+    const invokeSecondLambda = new tasks.LambdaInvoke(this, 'Final Processing', {
+      lambdaFunction: myOpenSearchEntryCreationLambda,
+      payload: stepfunctions.TaskInput.fromObject({
+        finalMetdata : sfn.JsonPath.stringAt('$.firstLambdaResult.existing_metadata'),
+      }),
+    });
+
+    const definition = runEcsTask
+    .next(invokeFirstLambda)
+    .next(invokeSecondLambda);
+
+    const stateMachine = new stepfunctions.StateMachine(this, 'VideoProcessingStateMachine', {
+      definition,
+      timeout: cdk.Duration.minutes(30),
+    });
+
+    // Grant necessary permissions
+    stateMachine.addToRolePolicy(new iam.PolicyStatement({
+      actions: ['ecs:RunTask', 'ecs:StopTask', 'ecs:DescribeTasks', 'iam:PassRole', 'logs:GetLogEvents',"logs:PutLogEvents", "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutRetentionPolicy",
+        "logs:CreateLogGroup"
+      ],  
+      resources: ['*'],
+    }));
+
+    
+    // // Grant Lambda permissions to pass task role
+    stateMachine.addToRolePolicy(new iam.PolicyStatement({
+      actions: ['iam:PassRole'],
+      resources: ['*'],
+      conditions: {
+        StringLike: {
+          'iam:PassedToService': 'ecs-tasks.amazonaws.com'
+        }
+      }
+    }));
+
+    s3OutBucket.grantReadWrite(taskDefinition.taskRole);
+    s3Bucket.grantRead(taskDefinition.taskRole);
+
+    stepTriggerLambda.addToRolePolicy(new iam.PolicyStatement({
+      actions: ['states:StartExecution'],
+      resources: [stateMachine.stateMachineArn],
+    }));
+
+        
+    stepTriggerLambda.addEnvironment('STATE_MACHINE_ARN', stateMachine.stateMachineArn);
+
+    new cdk.CfnOutput(this, 'StateMachineArn', {
+      value: stateMachine.stateMachineArn,
+      description: 'State Machine ARN',
+    });
+
   }
 }
