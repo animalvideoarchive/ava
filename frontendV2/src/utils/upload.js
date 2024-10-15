@@ -1,8 +1,8 @@
 import axios from "axios"
 
-import axios from "axios"
-
 // initializing axios
+const api = axios.create({
+  baseURL: "/",
 })
 
 // original source: https://github.com/pilovm/multithreaded-uploader/blob/master/frontend/uploader.js
@@ -65,7 +65,10 @@ export class Uploader {
         url: "/initialize",
         method: "POST",
         data: videoInitializationUploadInput,
-        baseURL:this.baseURL
+        baseURL:this.baseURL,
+        headers: {
+          "Content-Type": "application/json",
+        }
       })
 
       const AWSFileDataOutput = initializeReponse.data
