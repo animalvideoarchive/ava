@@ -22,7 +22,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
     super(scope, id, props);
     const env = cdk.Stack.of(this).node.tryGetContext('env');
     const expires = cdk.Stack.of(this).node.tryGetContext('urlExpiry') ?? '43200';
-    const timeout = Number(cdk.Stack.of(this).node.tryGetContext('functionTimeout') ?? '60');
+    const timeout = Number(cdk.Stack.of(this).node.tryGetContext('functionTimeout') ?? '300'); // lambda timeout in seconds
 
     const s3Bucket = new s3.Bucket(this, "document-upload-bucket-new", {
       bucketName: `document-client-upload-${env}`,
@@ -53,7 +53,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
         ],
         exposedHeaders: ['ETag'],
       }],
-      // removalPolicy: cdk.RemovalPolicy.DESTROY
+      removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
     // need to check this whitelisting
@@ -66,17 +66,17 @@ export class MultipartS3UploadStack extends cdk.Stack {
           principals: [new iam.AnyPrincipal()],
           resources: ['execute-api:/*/*/*'],
         }),
-        new iam.PolicyStatement({
-          effect: iam.Effect.DENY,
-          principals: [new iam.AnyPrincipal()],
-          actions: ['execute-api:Invoke'],
-          resources: ['execute-api:/*/*/*'],
-          conditions: {
-            'NotIpAddress': {
-              "aws:SourceIp": whitelistedIps
-            }
-          }
-        })
+        // new iam.PolicyStatement({
+        //   effect: iam.Effect.DENY,
+        //   principals: [new iam.AnyPrincipal()],
+        //   actions: ['execute-api:Invoke'],
+        //   resources: ['execute-api:/*/*/*'],
+        //   // conditions: {
+        //   //   'NotIpAddress': {
+        //   //     "aws:SourceIp": whitelistedIps
+        //   //   }
+        //   // }
+        // })
       ]
     })
 
@@ -229,10 +229,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
     // }));
 
     // Create a Lambda function to trigger the ECS task
-    const stepTriggerLambda = new NodejsFunction(this, 'EcsTriggerLambda', {
+    const stepTriggerLambda = new NodejsFunction(this, 'stepFuncTriggerLambda', {
       ...commonNodeJSLambdaProps,
-      entry: join(__dirname, '../lambda/ecsTrigger.js'),
-      functionName: `step-trigger-${env}`,
+      entry: join(__dirname, '../lambda/stepFuncTrigger.js'),
+      functionName: `step-func-trigger-${env}`,
       timeout: cdk.Duration.seconds(timeout),
     });
 
@@ -246,10 +246,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
       code: lambda.Code.fromAsset('lambda'),  // directory containing 'app.py' and any other dependencies
       handler: 'getMetadataFromBedrockClaude.lambda_handler',  // file is 'app.py' and function is 'handler'
       functionName: `bedrock-claude-call-${env}`,
-      // environment: {
-      //   OUTPUT_BUCKET: s3OutBucket.bucketName,
-        
-      // }
+      environment: {
+        OUTPUT_BUCKET: s3OutBucket.bucketName
+      },
+      timeout: cdk.Duration.seconds(timeout),
     });
 
     myClaudeLambda.addToRolePolicy(new iam.PolicyStatement({
@@ -262,16 +262,16 @@ export class MultipartS3UploadStack extends cdk.Stack {
 
     // Create an OpenSearch Service domain
     // See https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html
-    const collection = new ops.CfnCollection(this, 'ProductSearchCollection', {
-      name: 'product-collection',
+    const collection = new ops.CfnCollection(this, 'ZooVideoMetadataSearchCollection', {
+      name: 'zoo-metadata-collection',
       type: 'SEARCH',
       description: "This collections will store the metadata of admin upload vidoes for zoo ",
     });
 
     // Encryption policy is needed in order for the collection to be created
     const encPolicy = new ops.CfnSecurityPolicy(this, 'ProductSecurityPolicy', {
-      name: 'product-collection-policy',
-      policy: '{"Rules":[{"ResourceType":"collection","Resource":["collection/product-collection"]}],"AWSOwnedKey":true}',
+      name: 'zoo-metadata-collection-policy',
+      policy: '{"Rules":[{"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"]}],"AWSOwnedKey":true}',
       type: 'encryption'
     });
     collection.addDependency(encPolicy);
@@ -279,26 +279,13 @@ export class MultipartS3UploadStack extends cdk.Stack {
     // Network policy is required so that the dashboard can be viewed!
     const netPolicy = new ops.CfnSecurityPolicy(this, 'ProductNetworkPolicy', {
       name: 'product-network-policy',
-      policy: '[{"Rules":[{"ResourceType":"collection","Resource":["collection/product-collection"]}, {"ResourceType":"dashboard","Resource":["collection/product-collection"]}],"AllowFromPublic":true}]',
+      policy: '[{"Rules":[{"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"]}, {"ResourceType":"dashboard","Resource":["collection/zoo-metadata-collection"]}],"AllowFromPublic":true}]',
       type: 'network'
     });
     collection.addDependency(netPolicy);
-
-    const extractDomainPart = (endpoint: any): string => {
-      console.log("endpoint", endpoint);
-      const match = endpoint.match(/^https?:\/\/([^/_]+)/);
-      return match ? match[1] : endpoint;
-    };
-
-    this.domainHost = extractDomainPart(collection.attrCollectionEndpoint);
-    console.log("domainHost", this.domainHost);
     
     new cdk.CfnOutput(this, 'DashboardEndpoint', {
       value: collection.attrDashboardEndpoint,
-    });
-
-    new cdk.CfnOutput(this, 'DashboardHost', {
-      value: this.domainHost,
     });
 
     // Define the Lambda function
@@ -308,10 +295,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
       functionName: `opensearch-entry-creation-${env}`,
       code: lambda.Code.fromDockerBuild("lambda/opensearchLambda"),
       environment: {
-        COLLECTION_ENDPOINT : `${this.domainHost}`,
-        INDEX_NAME : 'product-collection-index',
+        COLLECTION_ENDPOINT : collection.attrDashboardEndpoint,
+        INDEX_NAME : 'zoo-metadata-collection-index',
       },
-      timeout: cdk.Duration.minutes(2),
+      timeout: cdk.Duration.seconds(timeout),
     });
     
     myOpenSearchEntryCreationLambda.addToRolePolicy(new iam.PolicyStatement({
@@ -320,18 +307,11 @@ export class MultipartS3UploadStack extends cdk.Stack {
       resources: ['*']
     }));
 
-    new ops.CfnAccessPolicy(this, 'ProductDataPolicy', {
-      name: 'product-data-policy',
-      policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/product-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/product-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}"]}]`,
+    new ops.CfnAccessPolicy(this, 'ZooVideoMetadataDataPolicy', {
+      name: 'zoo-metadata-data-policy',
+      policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/zoo-metadata-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}"]}]`,
       type: 'data'
     });
-
-
-    // const stateMachine = new sfn.StateMachine(this, 'MyStateMachine', {
-    //   definition: new tasks.LambdaInvoke(this, "MyLambdaTask", {
-    //     lambdaFunction: helloFunction
-    //   }).next(new sfn.Succeed(this, "GreetedWorld"))
-    // });
 
     // Step Function definition
 
@@ -405,27 +385,22 @@ export class MultipartS3UploadStack extends cdk.Stack {
       resultPath: '$.ecsResult',
     });
 
-    const invokeFirstLambda = new tasks.LambdaInvoke(this, 'Process Video Metadata', {
+
+    const invokeClaudeLambdaTask = new tasks.LambdaInvoke(this, 'Process Video Metadata', {
       lambdaFunction: myClaudeLambda,
-      payload: stepfunctions.TaskInput.fromObject({
-        thumbnailStartPath: sfn.JsonPath.stringAt('$.ecsResult.thumbnailStartPath'),
-        thumbnailEndPath: sfn.JsonPath.stringAt('$.ecsResult.thumbnailEndPath'),
-        outputBucket: sfn.JsonPath.stringAt('$.ecsResult.outputBucket'),
-        clippedVideoPath: sfn.JsonPath.stringAt('$.ecsResult.clippedVideoPath'),
-      }),
-      resultPath: '$.firstLambdaResult'
+      inputPath: '$',
+      outputPath: '$.Payload'
     });
 
-    const invokeSecondLambda = new tasks.LambdaInvoke(this, 'Final Processing', {
+    const invokeOpensearchLambdaTask = new tasks.LambdaInvoke(this, 'Final Processing', {
       lambdaFunction: myOpenSearchEntryCreationLambda,
-      payload: stepfunctions.TaskInput.fromObject({
-        finalMetdata : sfn.JsonPath.stringAt('$.firstLambdaResult.existing_metadata'),
-      }),
+      inputPath: '$',
+      outputPath: '$.Payload'
     });
 
     const definition = runEcsTask
-    .next(invokeFirstLambda)
-    .next(invokeSecondLambda);
+    .next(invokeClaudeLambdaTask)
+    .next(invokeOpensearchLambdaTask);
 
     const stateMachine = new stepfunctions.StateMachine(this, 'VideoProcessingStateMachine', {
       definition,

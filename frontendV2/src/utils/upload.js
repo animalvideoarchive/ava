@@ -1,8 +1,8 @@
 import axios from "axios"
 
+import axios from "axios"
+
 // initializing axios
-const api = axios.create({
-  baseURL: "/",
 })
 
 // original source: https://github.com/pilovm/multithreaded-uploader/blob/master/frontend/uploader.js

@@ -8,6 +8,13 @@ from opensearchpy import OpenSearch, RequestsHttpConnection, AWSV4SignerAuth
 # Get the OpenSearch domain name from environment variable
 OPENSEARCH_COLLECTION_ENDPOINT = os.getenv('COLLECTION_ENDPOINT')
 INDEX_NAME = os.getenv('INDEX_NAME')
+domain = OPENSEARCH_COLLECTION_ENDPOINT.split('//')[1]  # Gets the part after 'https://'
+
+# Now split by '/' to isolate the domain from paths
+domain = domain.split('/')[0]  
+
+print("Domain : ",domain)
+
 
 # default lambda region
 region = os.getenv('AWS_REGION')
@@ -19,7 +26,7 @@ auth = AWSV4SignerAuth(credentials, region, service)
 
 # create an opensearch client and use the request-signer
 client = OpenSearch(
-    hosts=[{'host': OPENSEARCH_COLLECTION_ENDPOINT, 'port': 443}],
+    hosts=[{'host': domain, 'port': 443}],
     http_auth=auth,
     use_ssl=True,
     verify_certs=True,
@@ -35,9 +42,15 @@ def generate_unique_id():
 
 def lambda_handler(event, context):
     try:
+        print("event ", event)
+
         # Extract the video metadata from the event
         video_metadata = event['video_metadata']
+        print("Video_Metdata ", video_metadata)
         
+        # Generate a unique document ID
+        doc_id = generate_unique_id()
+
         # Generate a unique document ID
         doc_id = generate_unique_id()
         
