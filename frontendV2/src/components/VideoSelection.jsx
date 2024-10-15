@@ -95,6 +95,7 @@ function VideoSelection() {
       <input
         type="file"
         multiple
+        accept="video/mp4" // Added to restrict file selection to mp4 videos
         onChange={handleFileChange}
         style={{ display: 'none' }}
         id="fileInput"

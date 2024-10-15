@@ -9,9 +9,6 @@ const api = axios.create({
 export class Uploader {
   constructor(options) {
     this.useTransferAcceleration = options.useTransferAcceleration
-    // this must be bigger than or equal to 5MB,
-    // otherwise AWS will respond with:
-    // "Your proposed upload is smaller than the minimum allowed size"
     options.chunkSize = options.chunkSize || 0
     this.chunkSize = Math.max((1024 * 1024 * options.chunkSize), (1024 * 1024 * 5))
     // number of parallel uploads
@@ -38,7 +35,6 @@ export class Uploader {
   start() {
     console.log("Start")
     console.log("Threads Quantity: ", this.threadsQuantity)
-    // this.initialize()
     // Return a promise that resolves when the upload is complete
     this.uploadPromise = new Promise((resolve, reject) => {
         this.resolveUpload = resolve;
@@ -119,7 +115,6 @@ export class Uploader {
       return
     }
 
-    console.log("Parts: ", this.parts)
     const part = this.parts.pop()    
     console.log("part :", part.PartNumber)   
     console.log("File name: ",this.fileKey)
@@ -279,7 +274,6 @@ export class Uploader {
               }
 
               this.uploadedParts.push(uploadedPart)
-              console.log("Part uploaded till now: ",this.uploadedParts)
               console.log("Time now ", new Date().toString())
               resolve(xhr.status)
               delete this.activeConnections[part.PartNumber - 1]

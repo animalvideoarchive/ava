@@ -147,8 +147,6 @@ export const FormProvider = ({ children }) => {
             }
             console.log("Finished uploading", file.name)
         }
-        console.log(pgvalues)
-        console.log(perfs)
     };
 
     const disablePrev = page === 0
