@@ -2,7 +2,7 @@ import React from 'react';
 import logoImage from "../assets/logo.png";
 import "../index.css";
 
-const Header = ({ signOut }) => {
+const Header = ({onLogout }) => {
   return (
     <header className="header">
       <div className="logo">
@@ -12,7 +12,7 @@ const Header = ({ signOut }) => {
       <nav>
         <ul>
           <li className="active">Home</li>
-          <li onClick={signOut}>Logout</li> 
+          <li onClick={onLogout}>Logout</li> 
         </ul>
       </nav>
     </header>

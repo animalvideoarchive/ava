@@ -1,20 +1,49 @@
 import "./App.css"
+import React, { useState, useRef } from "react";
 import Form from "./components/Form";
 import { FormProvider } from './contexts/FormContext';
+import { signOut } from "aws-amplify/auth"; // AWS Amplify for authentication
 import { Amplify } from 'aws-amplify';
-import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
 import awsconfig from './custom-aws-config';
+import Login from "./components/LoginPage";
 
 Amplify.configure(awsconfig);
 
-function App({ signOut }) {
+function App() {
+
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return localStorage.getItem("isLoggedIn") === "true";
+  });
+
+  // Handle user login
+  const handleLogin = () => {
+    localStorage.setItem("isLoggedIn", "true");
+    setIsLoggedIn(true);
+  };
+
+  // Handle user logout
+  const handleLogout = async () => {
+    try {
+      await signOut(); // AWS Cognito sign out
+      localStorage.removeItem("isLoggedIn");
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error("Logout error", error);
+    }
+  };
 
   return (
-    <FormProvider>
-      <Form signOut={signOut} />
-    </FormProvider>
-  )
-  
+    <div>
+      {!isLoggedIn ? (
+        <Login onLogin={handleLogin} /> // Render login page when not logged in
+      ) : (
+        <FormProvider>
+          <Form signOut={handleLogout} />
+        </FormProvider>
+      )}
+    </div>
+  );
+
 }
 
-export default withAuthenticator(App)
+export default App;

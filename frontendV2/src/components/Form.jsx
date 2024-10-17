@@ -91,7 +91,7 @@ const Form = ({ signOut }) => {
 
     const content = (
         <div>
-            <Header signOut={signOut} /> 
+            <Header onLogout={signOut} /> 
 
             <ProgressBar/>
 

@@ -361,12 +361,14 @@ input[type="email"],
 textarea {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 15px;
 }
 
+.textField{
+  border: 1px solid #ccc;
+}
 
 /* Textarea specific styles */
 textarea {
@@ -707,6 +709,14 @@ input[type="radio"], input[type="checkbox"] {
 .MuiTypography-root{
   font-size: 1rem;
   padding-left: 40px;
+}
+
+.MuiTextField-root{
+  border: none;
+}
+
+.MuiOutlinedInput-input{
+  border: none;
 }
 
 .a-remove-button{

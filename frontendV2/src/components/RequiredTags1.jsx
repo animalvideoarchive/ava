@@ -8,7 +8,7 @@ const RequiredTags1 = () => {
             <div className="flex-col-left">
                 <div className="flex-col">
                     <label htmlFor="contactEmail">Contact Email <span className="required">*</span></label>
-                    <input
+                    <input className="textField"
                         type="email"
                         id="contactEmail"
                         name="contactEmail"
@@ -23,7 +23,7 @@ const RequiredTags1 = () => {
                     <label htmlFor="commonName">Common Name <span className="required">*</span>
                         <span className="tooltip" title="Please use the IUCN red list for consistency of names.">?</span>
                     </label>
-                    <input
+                    <input className="textField"
                         type="text"
                         id="commonName"
                         name="commonName"
@@ -38,7 +38,7 @@ const RequiredTags1 = () => {
                 <div className="flex-col">
                     <label htmlFor="contactName">Contact Name <span className="required">*</span></label>
                     <div className="split-name">
-                        <input
+                        <input className="textField"
                             type="text"
                             id="contactFirstName"
                             name="contactFirstName"
@@ -48,7 +48,7 @@ const RequiredTags1 = () => {
                             value={data.contactFirstName}
                             onChange={handleChange}
                         />
-                        <input
+                        <input className="textField"
                             type="text"
                             id="contactLastName"
                             name="contactLastName"
@@ -65,7 +65,7 @@ const RequiredTags1 = () => {
             <div className="flex-col-right">
                 <div className="flex-col">
                     <label htmlFor="briefVideoDescription">Brief description of video(s) <span className="required">*</span></label>
-                        <textarea
+                        <textarea className="textField"
                         type="text"
                         id="briefVideoDescription"
                         name="briefVideoDescription"

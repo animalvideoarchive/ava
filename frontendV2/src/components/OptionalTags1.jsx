@@ -19,14 +19,14 @@ const OptionalTags = () => {
                             Research approval process
                         </label>
 
-                        <input type="text" name="researchApproval" value={data.researchApproval || ''} onChange={handleChange} placeholder="Paste link here" />
+                        <input type="text" className="textField" name="researchApproval" value={data.researchApproval || ''} onChange={handleChange} placeholder="Paste link here" />
                     </div>
                     <div className="flex-col">
                         <label>
                             Individual animal IDs
                         </label>
 
-                        <input type="text" name="animalIDs" value={data.animalIDs || ''} onChange={handleChange} />
+                        <input type="text" className='textField' name="animalIDs" value={data.animalIDs || ''} onChange={handleChange} />
                     </div>
                     <div className="flex-col">
                         <label>
@@ -50,18 +50,18 @@ const OptionalTags = () => {
                             Scientific Name
                         </label>
 
-                        <input type="text" name="scientificName" value={data.scientificName || ''} onChange={handleChange} />
+                        <input type="text" className="textField" name="scientificName" value={data.scientificName || ''} onChange={handleChange} />
                     </div>
                     <div className="flex-col">
                         <label>
                             Any other relevant covariate data for this clip?
-                            <input type="text" name="covariateData" value={data.covariateData || ''} onChange={handleChange} />
+                            <input type="text" className="textField" name="covariateData" value={data.covariateData || ''} onChange={handleChange} />
                         </label>
                     </div>
                     <div className="flex-col">
                         <label>
                             Is anything else going on during this video that might affect the behavior of the animals?
-                            <textarea name="behavioralEffects" onChange={handleChange} value={data.behavioralEffects || ''}></textarea>
+                            <textarea className="textField" name="behavioralEffects" onChange={handleChange} value={data.behavioralEffects || ''}></textarea>
                         </label>
                     </div>
                 </div>

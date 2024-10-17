@@ -71,7 +71,7 @@ const AdditionalDetails = () => {
                 <div className="form-column">
                     <div className="flex-col">
                         <label htmlFor="publications">Publications & published abstracts using these data</label>
-                        <input type="text" name="publications" value={data.publications || ''} onChange={handleChange} placeholder="Paste link here" />
+                        <input type="text" className="textField" name="publications" value={data.publications || ''} onChange={handleChange} placeholder="Paste link here" />
                     </div>
                 </div>
             </div>
