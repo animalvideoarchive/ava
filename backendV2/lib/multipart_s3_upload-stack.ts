@@ -11,9 +11,9 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as ops from 'aws-cdk-lib/aws-opensearchserverless';
-import * as sfn from 'aws-cdk-lib/aws-stepfunctions';
 import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
 
 export class MultipartS3UploadStack extends cdk.Stack {
   public readonly domainHost: string;
@@ -445,5 +445,41 @@ export class MultipartS3UploadStack extends cdk.Stack {
       description: 'State Machine ARN',
     });
 
+    // Create a Cognito User Pool
+    const userPool = new cognito.UserPool(this, 'UserPool', {
+      userPoolName: 'ZooAdminUserPool',
+      selfSignUpEnabled: false, // Disable sign-ups
+      signInAliases: {
+        username: true,
+        email: true,
+      },
+      signInCaseSensitive: false, // Make sign-in case insensitive for username and email
+      autoVerify: {
+        email: true,
+      },
+      accountRecovery: cognito.AccountRecovery.EMAIL_ONLY, // Account recovery via email only
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // For testing purposes, removes the user pool when the stack is destroyed
+    });
+
+    // Output the User Pool ID
+    new cdk.CfnOutput(this, 'UserPoolId', {
+      value: userPool.userPoolId,
+    });
+
+    // Create an App Client for Amplify Integration
+    const userPoolClient = new cognito.UserPoolClient(this, 'UserPoolClient', {
+      userPool,
+      generateSecret: false, // No client secret for Amplify integration
+      authFlows: {
+        userPassword: true,
+        userSrp: true,
+      },
+      preventUserExistenceErrors: true, // Prevents user existence errors from revealing information
+    });
+
+    // Output the App Client ID
+    new cdk.CfnOutput(this, 'UserPoolClientId', {
+      value: userPoolClient.userPoolClientId,
+    });
   }
 }

@@ -6,7 +6,7 @@ import VideoSubmitPopup from './VideoSubmitPopup'; // Importing the modal compon
 import AssocaiateTagsWithVideosPopUp from './AssocaiateTagsWithVideosPopUp'; // Importing the modal component
 import ProgressBar from './ProgressBar'; // Importing the progress bar component
 
-const Form = () => {
+const Form = ({ signOut }) => {
 
     const {
         files,
@@ -91,7 +91,7 @@ const Form = () => {
 
     const content = (
         <div>
-            <Header /> 
+            <Header signOut={signOut} /> 
 
             <ProgressBar/>
 

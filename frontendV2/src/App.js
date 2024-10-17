@@ -1,15 +1,20 @@
 import "./App.css"
 import Form from "./components/Form";
 import { FormProvider } from './contexts/FormContext';
+import { Amplify } from 'aws-amplify';
+import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react';
+import awsconfig from './custom-aws-config';
 
-function App() {
+Amplify.configure(awsconfig);
+
+function App({ signOut }) {
 
   return (
     <FormProvider>
-      <Form />
+      <Form signOut={signOut} />
     </FormProvider>
   )
   
 }
 
-export default App
+export default withAuthenticator(App)
