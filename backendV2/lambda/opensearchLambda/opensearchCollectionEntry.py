@@ -40,6 +40,243 @@ def generate_unique_id():
     unique_id = f"{timestamp}-{str(uuid.uuid4())}"
     return unique_id
 
+# create index in opensearch if not yet created (Will run one only time when user upload first video)
+def index_creation():
+    # Create the index with mappings
+    client.indices.create(
+        index=INDEX_NAME,
+        body={
+            "mappings": {
+                "properties": {
+                "ageofindividuals": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "animalids": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "animalvisibility": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "behavioraleffects": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "briefvideodescription": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "clippedvideopath": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "commonname": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "contactemail": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "contactfirstname": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "contactlastname": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "covariatedata": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "datacollectionstatus": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "duration": {
+                    "type": "float"
+                },
+                "endtime": {
+                    "type": "date",
+                    "format": "HH:mm:ss||epoch_millis"
+                },
+                "groupsize": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "id": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "otherdatadetails": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "researchapproval": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "scientificname": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "sexofanimals": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "starttime": {
+                    "type": "date",
+                    "format": "HH:mm:ss||epoch_millis"
+                },
+                "thumbnailendpath": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "thumbnailstartpath": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "videocontext": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "videodate": {
+                    "type": "date",
+                    "format": "MM-dd-yyyy"
+                },
+                "videoformat": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                },
+                "videolocation": {
+                    "type": "text",
+                    "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                    }
+                }
+                }
+            }
+        }
+    )
+
+    print(f"Index {INDEX_NAME} created successfully")
+
 def lambda_handler(event, context):
     try:
         print("event ", event)
@@ -51,8 +288,9 @@ def lambda_handler(event, context):
         # Generate a unique document ID
         doc_id = generate_unique_id()
 
-        # Generate a unique document ID
-        doc_id = generate_unique_id()
+        # create index in opensearch if not yet created (Will run one only time when user upload first video)
+        if not client.indices.exists(index=INDEX_NAME):
+            index_creation()
         
         # Prepare the document for indexing
         document = {
