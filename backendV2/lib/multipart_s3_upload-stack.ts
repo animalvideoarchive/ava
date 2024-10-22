@@ -243,7 +243,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
     // Define the Lambda function
     const myClaudeLambda = new lambda.Function(this, 'MyClaudeLambda', {
       runtime: Runtime.PYTHON_3_10,  // Runtime version
-      code: lambda.Code.fromAsset('lambda'),  // directory containing 'app.py' and any other dependencies
+      code: lambda.Code.fromAsset('lambda/bedrockClaudeLambda'),  // directory containing 'app.py' and any other dependencies
       handler: 'getMetadataFromBedrockClaude.lambda_handler',  // file is 'app.py' and function is 'handler'
       functionName: `bedrock-claude-call-${env}`,
       environment: {
