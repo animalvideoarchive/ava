@@ -14,6 +14,8 @@ import * as ops from 'aws-cdk-lib/aws-opensearchserverless';
 import * as tasks from 'aws-cdk-lib/aws-stepfunctions-tasks';
 import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
+import * as path from 'path';
 
 export class MultipartS3UploadStack extends cdk.Stack {
   public readonly domainHost: string;
@@ -27,11 +29,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
     const s3Bucket = new s3.Bucket(this, "document-upload-bucket-new", {
       bucketName: `document-client-upload-${env}`,
       lifecycleRules: [{
-        expiration: cdk.Duration.days(10),
         abortIncompleteMultipartUploadAfter: cdk.Duration.days(1),
         // transitions: [{
         //   storageClass: s3.StorageClass.DEEP_ARCHIVE,
-        //   transitionAfter: cdk.Duration.days(1), // Transition to Glacier after 1 day
+        //   transitionAfter: cdk.Duration.days(2), // Transition to Glacier after 1 day
         // }],    
       }],
       blockPublicAccess: {
@@ -56,8 +57,8 @@ export class MultipartS3UploadStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    // need to check this whitelisting
-    const whitelistedIps = [cdk.Stack.of(this).node.tryGetContext('whitelistip')]
+    // // need to check this whitelisting
+    // const whitelistedIps = [cdk.Stack.of(this).node.tryGetContext('whitelistip')]
 
     const apiResourcePolicy = new iam.PolicyDocument({
       statements: [
@@ -160,11 +161,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
       },
     });
     
-
+    // Bucket to store clipping and thumbnails
     const s3OutBucket = new s3.Bucket(this, "document-clipping-thumbnail-bucket", {
       bucketName: `document-ecs-clipping-thumbnail-upload-${env}`,
       lifecycleRules: [{
-        expiration: cdk.Duration.days(10),
         abortIncompleteMultipartUploadAfter: cdk.Duration.days(1),
       }],
       blockPublicAccess: {
@@ -187,7 +187,6 @@ export class MultipartS3UploadStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-
     const commonNodeJSLambdaProps = {
       bundling: {
         externalModules: [
@@ -195,40 +194,8 @@ export class MultipartS3UploadStack extends cdk.Stack {
       },
       runtime: Runtime.NODEJS_18_X,
     };
-    
-    // // Create a Lambda function to trigger the ECS task
-    // const lambdaFunction = new NodejsFunction(this, 'EcsTriggerLambda', {
-    //   ...commonNodeJSLambdaProps,
-    //   entry: join(__dirname, '../lambda/ecsTrigger.js'),
-    //   environment: {
-    //     CLUSTER_NAME: cluster.clusterName,
-    //     TASK_DEFINITION_ARN: taskDefinition.taskDefinitionArn,
-    //     // VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
-    //     VPC_SUBNETS: JSON.stringify(vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnetIds),
-    //     S3_OUT_BUCKET: s3OutBucket.bucketName,
-    //   },
-    //   functionName: `ecs-trigger-${env}`,
-    //   timeout: cdk.Duration.seconds(timeout),
-    // });
 
-    // // Grant Lambda permissions to run ECS tasks
-    // lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-    //   actions: ['ecs:RunTask', 'ecs:DescribeTasks', 'iam:PassRole'],
-    //   resources: [taskDefinition.taskDefinitionArn, taskRole.roleArn],
-    // }));
-    
-    // // // Grant Lambda permissions to pass task role
-    // lambdaFunction.addToRolePolicy(new iam.PolicyStatement({
-    //   actions: ['iam:PassRole'],
-    //   resources: ['*'],
-    //   conditions: {
-    //     StringLike: {
-    //       'iam:PassedToService': 'ecs-tasks.amazonaws.com'
-    //     }
-    //   }
-    // }));
-
-    // Create a Lambda function to trigger the ECS task
+    // Lambda function to trigger the ECS task
     const stepTriggerLambda = new NodejsFunction(this, 'stepFuncTriggerLambda', {
       ...commonNodeJSLambdaProps,
       entry: join(__dirname, '../lambda/stepFuncTrigger.js'),
@@ -236,11 +203,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(timeout),
     });
 
-
-    // Add an S3 event notification to trigger Lambda on object creation
+    // S3 event notification to trigger Lambda on video upload
     s3Bucket.addEventNotification(s3.EventType.OBJECT_CREATED, new s3n.LambdaDestination(stepTriggerLambda)); 
 
-    // Define the Lambda function
+    // Lambda function for calling Bedrock Claude
     const myClaudeLambda = new lambda.Function(this, 'MyClaudeLambda', {
       runtime: Runtime.PYTHON_3_10,  // Runtime version
       code: lambda.Code.fromAsset('lambda/bedrockClaudeLambda'),  // directory containing 'app.py' and any other dependencies
@@ -259,8 +225,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
 
     s3OutBucket.grantReadWrite(myClaudeLambda);
 
-
-    // Create an OpenSearch Service domain
+    // Create an OpenSearch Serverless Collection
     // See https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-manage.html
     const collection = new ops.CfnCollection(this, 'ZooVideoMetadataSearchCollection', {
       name: 'zoo-metadata-collection',
@@ -288,7 +253,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
       value: collection.attrDashboardEndpoint,
     });
 
-    // Define the Lambda function
+    // openseach data injection lambda function
     const myOpenSearchEntryCreationLambda = new lambda.Function(this, 'MyOpenSearchEntryCreationLambda', {
       runtime: Runtime.PYTHON_3_10,  // Runtime version
       handler: 'opensearchCollectionEntry.lambda_handler',  // file is 'app.py' and function is 'handler'
@@ -313,9 +278,18 @@ export class MultipartS3UploadStack extends cdk.Stack {
       type: 'data'
     });
 
-    // Step Function definition
+    
+    const dockerImage = new DockerImageAsset(this, 'ffmpegVideoProcesingImage', {
+      directory: path.join(__dirname, '../ecs'),
+      platform: cdk.aws_ecr_assets.Platform.LINUX_AMD64,
+    });
 
-        // Create a VPC for the ECS Cluster
+    new cdk.CfnOutput(this, 'ImageUri', {
+      value: dockerImage.imageUri,
+      description: 'The URI of the built Docker image'
+    });
+
+    // Create a VPC for the ECS Cluster
     // const vpc = new ec2.Vpc(this, 'Vpc', {
     //   maxAzs: 2 // Default is all AZs in the region
     // });
@@ -344,6 +318,17 @@ export class MultipartS3UploadStack extends cdk.Stack {
     s3Bucket.grantReadWrite(taskRole);
     s3OutBucket.grantReadWrite(taskRole);
 
+    taskRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'ecr:GetAuthorizationToken',
+        'ecr:BatchCheckLayerAvailability',
+        'ecr:GetDownloadUrlForLayer',
+        'ecr:BatchGetImage'
+      ],
+      resources: ['*']
+    }));
+
     // Define Fargate Task Definition
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
       memoryLimitMiB: 512,
@@ -354,7 +339,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
 
     // Add container to the task definition
     const container = taskDefinition.addContainer('MyContainer', {
-      image: ecs.ContainerImage.fromRegistry('nikhildocker7/ffmpegprocesing:latest'),
+      image: ecs.ContainerImage.fromDockerImageAsset(dockerImage),
       logging: new ecs.AwsLogDriver({
         streamPrefix: 'ecs'
       }),
