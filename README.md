@@ -6,12 +6,25 @@ The St. Louis Zoo Video Archive Project is a comprehensive cloud-native solution
 
 ## Key Features
 
-- Large video upload feature  with required and optional metadata
+<!-- - **Enhanced Large Video Upload Capabilities**: This feature allows for the seamless upload of large video files, supported by comprehensive metadata fields that can be either required or optional, facilitating detailed data organization and accessibility.
+
+- **Automated Video Processing**: Includes features such as video clipping and thumbnail generation to optimize content management.
+
+- **AI-Powered Metadata Extraction**: Utilizes AI to automatically extract critical information like dates and timestamps from videos, enhancing content discoverability and indexing.
+
+- **Advanced Search Functionality**: Empowers users with the ability to filter and retrieve videos based on multiple criteria, ensuring efficient navigation and data retrieval.
+
+- **Preview Clip Generation**: Offers a snapshot of video content through automatically generated preview clips, enabling quick content assessment and selection.
+
+- **Structured Video Access Requests**: Users can formally request access to full videos by submitting a specific form. This process notifies administrators directly, streamlining communication while the approval workflow itself remains outside the project's scope
+ -->
+
+- Enhanced Large Video Upload with both required and optional metadata fields.
 - Automated video processing (clipping, thumbnail generation)
-- AI-powered metadata extraction (date, timestamps, species identification)
+- AI-powered metadata extraction (date, timestamps)
 - Advanced search functionality with multiple filters
 - Preview clip generation for quick content assessment
-- Request steps for full video access
+- Allows users to request full video access, alerting administrators.
 
 <!-- ## Project Goals
 - **Ingest and Catalogue Video Footage**: Allow Admin to ingest large video files into the system and catalogue them with appropriate metadata, including tags and timestamps.
@@ -204,7 +217,7 @@ Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in
   - Ensure that for field "Alias attributes used to sign in"
   **Email** is selected
   - Fill in the required fields such as username, email (as required by your user pool settings), and password.
-  - Ensure to set the **Mark email as verified** if email is a required attribute and similarly for the phone number.
+  - Ensure to set the **Mark email as verified** if email is a required attribute.
   - Click **Create user**.
 
 ### 5. Using the Admin Credentials
