@@ -78,18 +78,23 @@ Clone the project
 ```
 git clone https://github.com/ASUCICREPO/St-Louis-Zoo.git
 ```
-## Backend (backendV2)
+
+#### This project is divided into three parts: AdminFrontend, UserFlowFrontend and Backend. You can find detailed instructions for each part in their respective README files.
+
+### Backend (backendV2)
 
 The backend codebase facilitates large video uploads and handles video processing tasks such as clipping and thumbnail generation. It leverages AI to extract time and date metadata, storing all results in OpenSearch for efficient and quick data retrieval. Additionally, it contains the infrastructure as code (IaC).
 
 For more information on the backend setup, refer to the [Backend README](./backendV2/README.md).
 
 
-## Admin Frontend Application (frontendV2)
+### Admin Frontend Application (frontendV2)
 
 The frontend provides a user-friendly interface for large video uploads and selecting associated metadata. Built using React, it connects with the backend via API calls to manage video processing tasks efficiently
 
 For more information on the backend setup, refer to the [AdminFrontend README](./frontendV2/README.md).
+
+## UserFlow Frontend Application
 
 <!-- ## Getting Started
 1. **Setting Up the Backend**:
@@ -97,7 +102,7 @@ For more information on the backend setup, refer to the [AdminFrontend README](.
 2. **Running the Frontend**:
    Instructions for installing dependencies and running the React application locally. -->
 
-# Adding an Admin to AWS Cognito User Pool
+## Adding an Admin to AWS Cognito User Pool
 
 ### 1. Log in to AWS Management Console
 Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in with your credentials.
