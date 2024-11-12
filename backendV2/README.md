@@ -1,15 +1,44 @@
-# Welcome to your CDK TypeScript project
+# Backend Setup 
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`MultipartS3UploadStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+The backend codebase facilitates large video uploads and handles video processing tasks such as clipping and thumbnail generation. It leverages AI to extract time and date metadata, storing all results in OpenSearch for efficient and quick data retrieval. Additionally, it contains the infrastructure as code (IaC).
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
-## Useful commands
+## Setup Guide
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+1. **Go the code directory**
+   - Move to directory contains the required code and run "npm install" to install all dependencies
+        ```
+     cd backendV2
+
+     npm install
+     ```
+
+2. **Set Up Your Environment**:
+   - Configure AWS CLI with your AWS account credentials:
+     ```
+     aws configure
+     ```
+
+3. **Set Up CDK Environment**:
+   - Bootstrap your AWS environment for CDK (run only once per AWS account/region):
+     ```
+     cdk bootstrap
+     ```
+
+<!-- 4. **Initialize CDK**:
+   - Ensure your environment is initialized:
+     ```
+     cdk init app --language typescript
+     ``` -->
+
+4. **Deploy the CDK Stack**:
+   - Deploy the stack to AWS:
+     ```
+     cdk deploy
+     ```
+
+5. **Once deployment is completed make sure to record the following values. These will be required to configure the frontend application correctly**:
+    - API Gateway endpoint URL
+    - UserPoolId
+    - UserPoolClientId
+
