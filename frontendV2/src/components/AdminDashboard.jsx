@@ -54,7 +54,7 @@ const AdminDashboard = () => {
           display: 'flex', 
           flexDirection: 'column', 
           alignItems: 'center', 
-          justifyContent: 'flex-start', 
+          justifyContent: 'flex-start',
           pt: 8, // Add padding top to move content higher
         }}
       >
@@ -62,7 +62,7 @@ const AdminDashboard = () => {
           Welcome Admin!
         </Typography>
         
-        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        {/* <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <IconButton size="large" onClick={handleEditMasterTags}>
               <TagIcon />
@@ -79,29 +79,30 @@ const AdminDashboard = () => {
               marginRight: "70px",
               background: 'linear-gradient(to bottom, #ffd700, #ff4500, #ff1493)'
             }} 
-          />
+          /> */}
 
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <IconButton size="large" onClick={handleAdminUploadVideo}>
-              <UploadIcon />
+              <UploadIcon sx={{ fill: '#f8a228', fontSize: '3rem'}}/>
             </IconButton>
-            <Typography variant="body2" sx={{ mt: 1 }}>Upload Video</Typography>
+            <Typography variant="body2" sx={{ mt: 1, fontSize: '1.1rem'}}>Upload Video</Typography>
           </Box>
         </Box>
         
-        <Box 
+        {/* <Box 
           sx={{
             position: 'absolute',
             bottom: 0,
             left: 0,
             right: 0,
             height: 64,
+            backgroundColor: '#f8a228',
             backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.2" d="M0,96L34.3,101.3C68.6,107,137,117,206,122.7C274.3,128,343,128,411,133.3C480,139,549,149,617,138.7C685.7,128,754,96,823,80C891.4,64,960,64,1029,80C1097.1,96,1166,128,1234,138.7C1302.9,149,1371,139,1406,133.3L1440,128L1440,320L1405.7,320C1371.4,320,1303,320,1234,320C1165.7,320,1097,320,1029,320C960,320,891,320,823,320C754.3,320,686,320,617,320C548.6,320,480,320,411,320C342.9,320,274,320,206,320C137.1,320,69,320,34,320L0,320Z"></path></svg>')`,
             backgroundRepeat: 'repeat-x',
             backgroundSize: 'contain'
           }}
-        />
-      </Box>
+        /> */}
+      {/* </Box> */}
     </ThemeProvider>
   );
 };
