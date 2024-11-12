@@ -1,7 +1,7 @@
 # St. Louis Zoo Video
 
 ## Project Overview
-The St. Louis Zoo Video Archive Project is a comprehensive cloud-native solution designed to preserve, catalog, and make accessible decades of valuable animal behavior footage. This system enables efficient large video ingestion, manual and intelligent metadata video tagging, and sophisticated search capabilities for both researchers and the public.
+The St. Louis Zoo Video Project is a comprehensive cloud-native solution designed to preserve, catalog, and make accessible decades of valuable animal behavior footage. This system enables efficient large video ingestion, manual and intelligent metadata video tagging, and supports advanced search capabilities for researchers and the general public.
 
 
 ## Key Features
@@ -23,7 +23,7 @@ The St. Louis Zoo Video Archive Project is a comprehensive cloud-native solution
 - Automated video processing (clipping, thumbnail generation)
 - AI-powered metadata extraction (date, timestamps)
 - Advanced search functionality with multiple filters
-- Preview clip generation for quick content assessment
+- Preview clip for quick content assessment
 - Allows users to request full video access, alerting administrators.
 
 <!-- ## Project Goals
@@ -31,10 +31,29 @@ The St. Louis Zoo Video Archive Project is a comprehensive cloud-native solution
 - **Enable Smart Search**: Implement a smart search functionality that allows users to easily find videos based on specific behaviors, timestamps, or animal species.
 - **Video Previews**: Generate short previews for each video to provide quick glimpses into the content, helping users decide which full videos to retrieve from cold storage. -->
 
+
 ## System Architecture
-Refer to the provided diagram for a detailed view of the system architecture, which outlines both the Admin and User Flows. This setup integrates various AWS services to handle video uploads, metadata tagging, storage, and retrieval processes efficiently.
+Refer to the provided diagram for a detailed view of the system architecture, which outlines both the Admin and User Flows. This setup integrates various AWS services to handle video uploads, video metadata tagging, storage, and retrieval processes efficiently.
 
 ![Architecture Diagram](Architecture.png)
+
+### Admin Flow
+1. **Login**: Admins authenticate through Amazon Cognito to gain system access.
+2. **Video Upload**: Admins upload videos via the React Video Uploader App (deployed using AWS cognito).
+3. **API Gateway**: Manages the API calls for initiating and finalizing multi-part video uploads.
+4. **Video Upload Lambda Functions**:
+   - **Initialize**: Triggers when a new upload is started and initialize the multi-part video upload. 
+   - **Get Presigned URLs**: Generates individual presigned URLs for each part of the video, facilitating the secure and reliable upload of large video files in parts to S3.
+   - **Finalize**: Completes the upload process once all parts of the video have been successfully uploaded. This action consolidates the parts into a single file in S3, making it ready for subsequent processing steps.
+5. **Video Processing**:
+   - **Step Functions**: Orchestrate the video processing tasks.
+      - **ECS with Fargate Task**: Executes the processing tasks such as clipping 10 seconds video, thumbnail generation, and metadata extraction.
+      - **Lambda Function with Amazon Bedrock (Claude 3.5)**: Generates video date, start time and end time metadata for each video .
+      - **Lambda Function for OpenSearch**: Calls the OpenSearch serverless service to store the metadata for each video.
+6. **OpenSearch**: Stores all video metadata, enabling efficient and advanced search capabilities.
+7. **Glacier Archive**: After processing, videos are archived 2 days after upload date in Glacier for long-term, cost-effective storage.
+
+### User Flow
 
 ## Prerequisites
 Before running the AWS CDK stack, ensure the following are installed and configured:
@@ -94,7 +113,7 @@ The frontend provides a user-friendly interface for large video uploads and sele
 
 For more information on the backend setup, refer to the [AdminFrontend README](./frontendV2/README.md).
 
-## UserFlow Frontend Application
+### UserFlow Frontend Application
 
 <!-- ## Getting Started
 1. **Setting Up the Backend**:
@@ -129,8 +148,40 @@ Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in
 - Navigate to the login page of the St. Louis Zoo Admin portal and enter the admin username and password you set up.
 - Upon successful authentication, you will have access to admin functionalities.
 
+
+## S3 Lifecycle Management for Video Storage
+
+### Overview
+
+For the St. Louis Zoo project, we have implemented an S3 lifecycle policy to efficiently manage video storage costs and ensure long-term durability. Videos uploaded to the S3 bucket are automatically transitioned to Glacier Deep Archive for cost-effective storage.
+
+ 
+![Glacier S3 Diagram](GalcierS3ArchiveDetails.png)
+
+### Lifecycle Rule Details
+
+- **Rule Application**: The lifecycle rule applies to all uploaded video files stored in the S3 bucket designated for the zoo's surveillance footage.
+- **Transition to Glacier Deep Archive**: Uploaded videos are moved to Glacier Deep Archive 2 days after their upload date. This transition allows us to benefit from the lower storage costs associated with Glacier Deep Archive while keeping the videos accessible for future retrieval if needed.
+
+### Exclusions from Archiving
+
+- **Clips and Thumbnails**: To ensure quick access and usability, short clips and thumbnails extracted from the original videos are **not** archived. These derivatives are stored in standard S3 storage to facilitate immediate access and use in user search
+
+
+
+
 ## Usage
-- **Admin Flow**: Admins can upload large videos with metadata information, which are then processed to extract previews and metadata before being archived.
+Once Infastructure (backend) and FrontEnd's are deployed:  
+<!-- - **Admin Flow**: Admins can upload large videos with metadata information, which are then processed to extract previews and metadata before being archived. -->
+#### Admin Flow
+- **Bulk Upload**: Admin can upload up to 20 large video files simultaneously.
+
+- **Batch Tagging**: All videos uploaded in a single batch are tagged with the same set of metadata/tags.
+  - **Required Metadata/Tags**: It is mandatory for Admin to provide specific metadata/tags that are crucial for the categorization and retrieval of the videos.
+  - **Optional Metadata/Tags**: Admin can additionally provide optional metadata/tags to enrich the video data further.
+
+#### User Flow
+
 - **User Flow**: Users can search the video catalog using the smart search feature, view video previews, and retrieve metadata.
 
 <!-- ## Future Enhancements

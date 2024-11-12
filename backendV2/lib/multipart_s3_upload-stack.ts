@@ -30,10 +30,11 @@ export class MultipartS3UploadStack extends cdk.Stack {
       bucketName: `document-client-upload-${env}`,
       lifecycleRules: [{
         abortIncompleteMultipartUploadAfter: cdk.Duration.days(1),
-        // transitions: [{
-        //   storageClass: s3.StorageClass.DEEP_ARCHIVE,
-        //   transitionAfter: cdk.Duration.days(2), // Transition to Glacier after 1 day
-        // }],    
+        transitions: [{
+          // Transition to Glacier Deep Archive () after 2 days
+          storageClass: s3.StorageClass.DEEP_ARCHIVE, 
+          transitionAfter: cdk.Duration.days(2), // Transition to Glacier after 2 days
+        }],    
       }],
       blockPublicAccess: {
         blockPublicAcls: true,
@@ -249,9 +250,9 @@ export class MultipartS3UploadStack extends cdk.Stack {
     });
     collection.addDependency(netPolicy);
     
-    new cdk.CfnOutput(this, 'DashboardEndpoint', {
-      value: collection.attrDashboardEndpoint,
-    });
+    // new cdk.CfnOutput(this, 'DashboardEndpoint', {
+    //   value: collection.attrDashboardEndpoint,
+    // });
 
     // openseach data injection lambda function
     const myOpenSearchEntryCreationLambda = new lambda.Function(this, 'MyOpenSearchEntryCreationLambda', {
@@ -284,15 +285,12 @@ export class MultipartS3UploadStack extends cdk.Stack {
       platform: cdk.aws_ecr_assets.Platform.LINUX_AMD64,
     });
 
-    new cdk.CfnOutput(this, 'ImageUri', {
-      value: dockerImage.imageUri,
-      description: 'The URI of the built Docker image'
-    });
+    // new cdk.CfnOutput(this, 'ImageUri', {
+    //   value: dockerImage.imageUri,
+    //   description: 'The URI of the built Docker image'
+    // });
 
     // Create a VPC for the ECS Cluster
-    // const vpc = new ec2.Vpc(this, 'Vpc', {
-    //   maxAzs: 2 // Default is all AZs in the region
-    // });
     const vpc = new ec2.Vpc(this, 'MyVpc', {
       maxAzs: 2,
       subnetConfiguration: [
@@ -425,10 +423,10 @@ export class MultipartS3UploadStack extends cdk.Stack {
         
     stepTriggerLambda.addEnvironment('STATE_MACHINE_ARN', stateMachine.stateMachineArn);
 
-    new cdk.CfnOutput(this, 'StateMachineArn', {
-      value: stateMachine.stateMachineArn,
-      description: 'State Machine ARN',
-    });
+    // new cdk.CfnOutput(this, 'StateMachineArn', {
+    //   value: stateMachine.stateMachineArn,
+    //   description: 'State Machine ARN',
+    // });
 
     // Create a Cognito User Pool
     const userPool = new cognito.UserPool(this, 'UserPool', {

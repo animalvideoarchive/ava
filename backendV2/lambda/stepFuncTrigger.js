@@ -9,7 +9,7 @@ exports.handler = async (event) => {
   console.log("S3 Event Received 2:", event);
 
   const s3Bucket = event.Records[0].s3.bucket.name; // Extract bucket name from the event
-  const s3FileName = event.Records[0].s3.object.key;     // Extract file name/key from the event
+  let s3FileName = event.Records[0].s3.object.key;     // Extract file name/key from the event
   
   console.log("Bucket: ",s3Bucket);
   console.log("File name: ",s3FileName);
