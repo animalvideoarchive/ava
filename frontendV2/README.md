@@ -1,4 +1,4 @@
-# Frontend Setup
+# Admin Frontend Setup
 
 The frontend provides a user-friendly interface for large video uploads and selecting associated metadata. Built using React, it connects with the backend via API calls to manage video processing tasks efficiently.
 
