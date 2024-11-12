@@ -1,4 +1,4 @@
-# St. Louis Zoo Video Archiving System
+# St. Louis Zoo Video
 
 ## Project Overview
 The St. Louis Zoo Video Archive Project is a comprehensive cloud-native solution designed to preserve, catalog, and make accessible decades of valuable animal behavior footage. This system enables efficient large video ingestion, manual and intelligent metadata video tagging, and sophisticated search capabilities for both researchers and the public.
