@@ -16,6 +16,7 @@ import * as stepfunctions from 'aws-cdk-lib/aws-stepfunctions';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
 import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import * as path from 'path';
+import * as ses from 'aws-cdk-lib/aws-ses';
 
 export class MultipartS3UploadStack extends cdk.Stack {
   public readonly domainHost: string;
@@ -25,6 +26,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
     const env = cdk.Stack.of(this).node.tryGetContext('env');
     const expires = cdk.Stack.of(this).node.tryGetContext('urlExpiry') ?? '43200';
     const timeout = Number(cdk.Stack.of(this).node.tryGetContext('functionTimeout') ?? '300'); // lambda timeout in seconds
+    const senderEmailAddress = cdk.Stack.of(this).node.tryGetContext('senderEmailAddress');
 
     const s3Bucket = new s3.Bucket(this, "document-upload-bucket-new", {
       bucketName: `document-client-upload-${env}`,
@@ -273,11 +275,11 @@ export class MultipartS3UploadStack extends cdk.Stack {
       resources: ['*']
     }));
 
-    new ops.CfnAccessPolicy(this, 'ZooVideoMetadataDataPolicy', {
-      name: 'zoo-metadata-data-policy',
-      policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/zoo-metadata-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}"]}]`,
-      type: 'data'
-    });
+    // new ops.CfnAccessPolicy(this, 'ZooVideoMetadataDataPolicy', {
+    //   name: 'zoo-metadata-data-policy',
+    //   policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/zoo-metadata-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}"]}]`,
+    //   type: 'data'
+    // });
 
     
     const dockerImage = new DockerImageAsset(this, 'ffmpegVideoProcesingImage', {
@@ -464,5 +466,84 @@ export class MultipartS3UploadStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'UserPoolClientId', {
       value: userPoolClient.userPoolClientId,
     });
+
+    // User Flow CDK code
+
+    const userApiGateway = new apigw.RestApi(this, 'user-flow-api', {
+      description: 'API for user flow',
+      restApiName: 'user-flow-api',
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigw.Cors.ALL_ORIGINS,                
+      },
+      policy: apiResourcePolicy,
+    });
+
+    // lambda function  to get the search results from opensearch
+    const getSearchResultsLambda = new lambda.Function(this, 'MyGetSearchResultsLambda', {
+      runtime: Runtime.PYTHON_3_10,  // Runtime version
+      handler: 'getSearchResults.lambda_handler',  // file is 'app.py' and function is 'handler'
+      functionName: `get-search-results-from-opensearch-${env}`,
+      code: lambda.Code.fromDockerBuild("lambda/getSearchResultsLambda"),
+      environment: {
+        COLLECTION_ENDPOINT : collection.attrDashboardEndpoint,
+        INDEX_NAME : 'zoo-metadata-collection-index',
+      },
+      timeout: cdk.Duration.seconds(timeout),
+    });
+
+    getSearchResultsLambda.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'aoss:Get*',       // Allows all get operations
+        'aoss:List*',      // Allows listing operations
+        'aoss:Search*',    // Allows search operations
+      ],
+      resources: ['*']
+    }));
+
+    new ops.CfnAccessPolicy(this, 'ZooVideoMetadataDataPolicy', {
+      name: 'zoo-metadata-data-policy',
+      policy: `[{"Description": "Access from lambda role to push", "Rules":[{"ResourceType":"index","Resource":["index/zoo-metadata-collection/*"],"Permission":["aoss:*"]}, {"ResourceType":"collection","Resource":["collection/zoo-metadata-collection"],"Permission":["aoss:*"]}], "Principal":["${myOpenSearchEntryCreationLambda.role?.roleArn}", "${getSearchResultsLambda.role?.roleArn}"]}]`,
+      type: 'data'
+    });
+    
+    s3OutBucket.grantReadWrite(getSearchResultsLambda);
+
+
+    // lambda function to send email
+    const sendEmailLambda = new lambda.Function(this, 'MySendEmailLambda', {
+      runtime: Runtime.PYTHON_3_10,  // Runtime version
+      code: lambda.Code.fromAsset('lambda/sendEmailLambda'),  // directory containing 'app.py' and any other dependencies
+      handler: 'sendEmail.lambda_handler',  // file is 'app.py' and function is 'handler'
+      functionName: `send-email-${env}`,
+      environment: {
+        SENDER_EMAIL: senderEmailAddress
+      },
+      timeout: cdk.Duration.seconds(timeout),
+    });
+
+     // SES Configuration Set
+    const configSet = new ses.ConfigurationSet(this, 'EmailConfigSet', {
+      reputationMetrics: true,
+      sendingEnabled: true,
+    });
+
+    // SES Email Identity
+    const emailIdentity = new ses.EmailIdentity(this, 'EmailIdentity', {
+      identity: ses.Identity.email(senderEmailAddress),
+      configurationSet: configSet,
+    });
+    
+    sendEmailLambda.addToRolePolicy(new iam.PolicyStatement({
+      actions: [
+        'ses:SendEmail',
+        'ses:SendRawEmail',
+        'ses:SendTemplatedEmail'
+      ],
+      resources: ['*']     // All SES resources
+    }));
+
+    userApiGateway.root.addResource('GetSearchResults').addMethod('POST', new apigw.LambdaIntegration(getSearchResultsLambda));
+    userApiGateway.root.addResource('SendEmail').addMethod('POST', new apigw.LambdaIntegration(sendEmailLambda));
   }
 }

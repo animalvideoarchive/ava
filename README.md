@@ -46,6 +46,7 @@ Refer to the provided diagram for a detailed view of the system architecture, wh
    - **Get Presigned URLs**: Generates individual presigned URLs for each part of the video, facilitating the secure and reliable upload of large video files in parts to S3.
    - **Finalize**: Completes the upload process once all parts of the video have been successfully uploaded. This action consolidates the parts into a single file in S3, making it ready for subsequent processing steps.
 5. **Video Processing**:
+   - Once videos are uploaded to s3 bucket, the below step function is triggered automatically using a lambda function.
    - **Step Functions**: Orchestrate the video processing tasks.
       - **ECS with Fargate Task**: Executes the processing tasks such as clipping 10 seconds video, thumbnail generation, and metadata extraction.
       - **Lambda Function with Amazon Bedrock (Claude 3.5)**: Generates video date, start time and end time metadata for each video .
