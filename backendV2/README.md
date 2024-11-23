@@ -43,3 +43,5 @@ The backend codebase facilitates large video uploads and handles video processin
     - UserPoolClientId
     - Admin Flow API Gateway endpoint URL 
     - UserFlow API Gateway endpoint URL
+
+6. **An email will be sent to the provided email address. Please click on the link in this email to verify the address. This is a crucial step as AWS SES requires that email addresses are verified before they can be used to send emails. Once verified, this email address will be utilized by the application to send notifications to end users or researchers.**

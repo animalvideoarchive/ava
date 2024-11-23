@@ -493,11 +493,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
 
     getSearchResultsLambda.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      actions: [
-        'aoss:Get*',       // Allows all get operations
-        'aoss:List*',      // Allows listing operations
-        'aoss:Search*',    // Allows search operations
-      ],
+      actions: ['aoss:*'],
       resources: ['*']
     }));
 
