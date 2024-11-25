@@ -55,7 +55,8 @@ Refer to the provided diagram for a detailed view of the system architecture, wh
 7. **Glacier Archive**: After processing, videos are archived 2 days after upload date in Glacier for long-term, cost-effective storage.
 
 ### User Flow
-1. **Search and Filter Videos:** Researchers access a web interface to search for videos using filters like duration, species (scientific/common name), location, group size, and more. Results are displayed, including metadata and links to video clips. 2. **Request Video Access:** Researchers select videos and submit a request for download access. They fill out a form with details such as their name, faculty, and the reason for the request.
+1. **Search and Filter Videos:** Researchers access a web interface to search for videos using filters like duration, species (scientific/common name), location, group size, and more. Results are displayed, including metadata and links to video clips. 
+2. **Request Video Access:** Researchers select videos and submit a request for download access. They fill out a form with details such as their name, faculty, and the reason for the request.
 3. **Email Notification:** The system sends an email containing the researcher’s request details to an administrator or contact person for review.
 
 
