@@ -78,7 +78,7 @@ Before running the AWS CDK stack, ensure the following are installed and configu
 6. **AWS CDK**: For defining cloud infrastructure in code.
    - Install and bootstrap [AWS CDK](https://aws.amazon.com/cdk/)
 
-7. **Docker**: Required to build and run Docker images for the ECS tasks.
+7. **Docker**: Required to build and run Docker images for the ECS tasks while deploying CDK code.
    - Install Docker
 
 8. **AWS Account Permissions**: Ensure your AWS account has the necessary permissions to create and manage the required resources (S3, Lambda, Step Functions, ECS, ECR, CloudWatch, Cognito, Opensearch Serverless, Amplify, SES, etc.)
