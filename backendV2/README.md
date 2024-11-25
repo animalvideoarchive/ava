@@ -18,8 +18,12 @@ The backend codebase facilitates large video uploads and handles video processin
      ```
      aws configure
      ```
+3. **Start Docker**
+   - To use AWS CDK for building and deploying Docker images, Docker must be running on your system
+   - Open the Docker Desktop application from your Start Menu or Applications folder
+   - Wait until the Docker app indicates that it's running (look for a green "Docker is running" status).
 
-3. **Set Up CDK Environment**:
+4. **Set Up CDK Environment**:
    - Bootstrap your AWS environment for CDK (run only once per AWS account/region):
      ```
      cdk bootstrap
@@ -31,17 +35,17 @@ The backend codebase facilitates large video uploads and handles video processin
      cdk init app --language typescript
      ``` -->
 
-4. **Deploy the CDK Stack**:
+5. **Deploy the CDK Stack**:
    - To deploy this stack to AWS, you need to specify both the email address and the deployment environment. The email address will be used by the application to send emails to end users or researchers once they request a video, while the environment parameter can help you manage different stages of deployment (e.g., development, staging, production).
    - Run the following command in your terminal, replacing `your-email@example.com` with the actual email address you intend to use, and `devenv` with your deployment environment (e.g., `dev`, `prod`):
      ```
      cdk deploy --context senderEmailAddress="your-email@example.com" --context env="devenv"
      ```
 
-5. **Once deployment is completed make sure to record the following values. These will be required to configure the frontend application correctly**:
+6. **Once deployment is completed make sure to record the following values. These will be required to configure the frontend application correctly**:
     - UserPoolId
     - UserPoolClientId
     - Admin Flow API Gateway endpoint URL 
     - UserFlow API Gateway endpoint URL
 
-6. **An email will be sent to the provided email address. Please click on the link in this email to verify the address. This is a crucial step as AWS SES requires that email addresses are verified before they can be used to send emails. Once verified, this email address will be utilized by the application to send notifications to end users or researchers.**
+7. **An email will be sent to the provided email address. Please click on the link in this email to verify the address. This is a crucial step as AWS SES requires that email addresses are verified before they can be used to send emails. Once verified, this email address will be utilized by the application to send notifications to end users or researchers.**
