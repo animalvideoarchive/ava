@@ -141,6 +141,7 @@ Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in
 - Choose the user pool **ZooAdminUserPool**
 
 ### 4. Manage Users
+- Click on Users from the left panel
 - To add a new user, click **Create user**.
   - Ensure that for field "Alias attributes used to sign in"
   **Email** is selected
