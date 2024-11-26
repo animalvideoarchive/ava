@@ -37,9 +37,9 @@ The backend codebase facilitates large video uploads and handles video processin
 
 5. **Deploy the CDK Stack**:
    - To deploy this stack to AWS, you need to specify both the email address and the deployment environment. The email address will be used by the application to send emails to end users or researchers once they request a video, while the environment parameter can help you manage different stages of deployment (e.g., development, staging, production).
-   - Run the following command in your terminal, replacing `your-email@example.com` with the actual email address you intend to use, and `devenv` with your deployment environment (e.g., `dev`, `prod`):
+   - Run the following command in your terminal, replacing `your-email@example.com` with the actual email address you intend to use to send email and `admin-email@example.com` with the actual admin email address you intend to use to receive the user request, and `devenv` with your deployment environment (e.g., `dev`, `prod`):
      ```
-     cdk deploy --context senderEmailAddress="your-email@example.com" --context env="devenv"
+     cdk deploy --context senderEmailAddress="your-email@example.com" --context adminEmail="admin-email@example.com" --context env="devenv"
      ```
 
 6. **Once deployment is completed make sure to record the following values. These will be required to configure the frontend application correctly**:

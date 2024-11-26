@@ -8,6 +8,7 @@ ses_client = boto3.client('ses')
 # Sender's email address
 # SENDER_EMAIL = "amanda34@asu.edu"  # Replace with actual sender email
 SENDER_EMAIL = os.getenv('SENDER_EMAIL')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
 
 def lambda_handler(event, context):
     try:
@@ -68,7 +69,7 @@ def lambda_handler(event, context):
         response = ses_client.send_email(
             Source=SENDER_EMAIL,
             Destination={
-                'ToAddresses': [email]  # Send to the email from the event
+                'ToAddresses': [ADMIN_EMAIL]  # Send to the email from the event
             },
             Message={
                 'Subject': {

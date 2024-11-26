@@ -27,7 +27,7 @@ export class MultipartS3UploadStack extends cdk.Stack {
     const expires = cdk.Stack.of(this).node.tryGetContext('urlExpiry') ?? '43200';
     const timeout = Number(cdk.Stack.of(this).node.tryGetContext('functionTimeout') ?? '300'); // lambda timeout in seconds
     const senderEmailAddress = cdk.Stack.of(this).node.tryGetContext('senderEmailAddress');
-
+    const adminEmailAddress = cdk.Stack.of(this).node.tryGetContext('adminEmail');
     const s3Bucket = new s3.Bucket(this, "document-upload-bucket-new", {
       bucketName: `document-client-upload-${env}`,
       lifecycleRules: [{
@@ -516,7 +516,8 @@ export class MultipartS3UploadStack extends cdk.Stack {
       handler: 'sendEmail.lambda_handler',  // file is 'app.py' and function is 'handler'
       functionName: `send-email-${env}`,
       environment: {
-        SENDER_EMAIL: senderEmailAddress
+        SENDER_EMAIL: senderEmailAddress,
+        ADMIN_EMAIL: adminEmailAddress
       },
       timeout: cdk.Duration.seconds(timeout),
     });

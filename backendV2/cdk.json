@@ -35,6 +35,7 @@
       "aws-cn"
     ],
     "env": "devenv",
-    "senderEmailAddress": "your-email@example.com"
+    "senderEmailAddress": "your-email@example.com",
+    "adminEmail": "admin-email@example.com"
   }
 }
