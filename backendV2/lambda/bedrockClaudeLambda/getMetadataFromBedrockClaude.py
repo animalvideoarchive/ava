@@ -106,11 +106,11 @@ def lambda_handler(event, context):
         print("Metada response ", metadate_response)
         existing_metadata = metadate_response.get('Metadata', {})
         print("Existing metdata : ", existing_metadata)
-        existing_metadata['thumbnailStartPath'] = f"s3://{bucket_name}/{image_keys[0]}" 
-        existing_metadata['thumbnailEndPath'] = f"s3://{bucket_name}/{image_keys[1]}" 
-        existing_metadata['videoDate'] = data['video_date']
-        existing_metadata['startTime'] = data['start_time']
-        existing_metadata['endTime'] = data['end_time']
+        existing_metadata['thumbnailstartpath'] = f"s3://{bucket_name}/{image_keys[0]}" 
+        existing_metadata['thumbnailendpath'] = f"s3://{bucket_name}/{image_keys[1]}" 
+        existing_metadata['videodate'] = data['video_date']
+        existing_metadata['starttime'] = data['start_time']
+        existing_metadata['endtime'] = data['end_time']
 
         copy_metadata_responese = s3_client.copy_object(
             Bucket=bucket_name, 
