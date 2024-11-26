@@ -55,6 +55,10 @@ Refer to the provided diagram for a detailed view of the system architecture, wh
 7. **Glacier Archive**: After processing, videos are archived 2 days after upload date in Glacier for long-term, cost-effective storage.
 
 ### User Flow
+1. **Search and Filter Videos:** Researchers access a web interface to search for videos using filters like duration, species (scientific/common name), location, group size, and more. Results are displayed, including metadata and links to video clips. 
+2. **Request Video Access:** Researchers select videos and submit a request for download access. They fill out a form with details such as their name, faculty, and the reason for the request.
+3. **Email Notification:** The system sends an email containing the researcher’s request details to an administrator or contact person for review.
+
 
 ## Prerequisites
 Before running the AWS CDK stack, ensure the following are installed and configured:
@@ -78,7 +82,7 @@ Before running the AWS CDK stack, ensure the following are installed and configu
 6. **AWS CDK**: For defining cloud infrastructure in code.
    - Install and bootstrap [AWS CDK](https://aws.amazon.com/cdk/)
 
-7. **Docker**: Required to build and run Docker images for the ECS tasks.
+7. **Docker**: Required to build and run Docker images for the ECS tasks while deploying CDK code.
    - Install Docker
 
 8. **AWS Account Permissions**: Ensure your AWS account has the necessary permissions to create and manage the required resources (S3, Lambda, Step Functions, ECS, ECR, CloudWatch, Cognito, Opensearch Serverless, Amplify, SES, etc.)
@@ -137,6 +141,7 @@ Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in
 - Choose the user pool **ZooAdminUserPool**
 
 ### 4. Manage Users
+- Click on Users from the left panel
 - To add a new user, click **Create user**.
   - Ensure that for field "Alias attributes used to sign in"
   **Email** is selected
