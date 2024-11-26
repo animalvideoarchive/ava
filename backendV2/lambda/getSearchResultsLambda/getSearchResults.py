@@ -38,15 +38,21 @@ s3_client = boto3.client('s3')
 
 def lambda_handler(event, context):
     # Validate input
-    if 'filters' not in event:
+    print("Event ", event)
+    body = json.loads(event["body"])
+    print("Body ",body)
+    if 'filters' not in body:
         return {
             'statusCode': 400,
             'body': json.dumps('Missing required parameter: filters')
         }
 
-    filters = event['filters']
+    filters = body['filters']
+    print("Filters : ", filters)
+
     search_results = search_animals(filters)  # Call the search function with filters
-   
+    print("Search Results ", search_results)
+
     # Check if search_results is None or empty and return dummy data if necessary
     if not search_results:
         search_results = []
@@ -56,11 +62,20 @@ def lambda_handler(event, context):
             result['_source']['presigned_thumbnailstartpath'] = create_presigned_url(result['_source']['thumbnailstartpath'])
             result['_source']['presigned_thumbnailendpath'] = create_presigned_url(result['_source']['thumbnailendpath'])
             result['_source']['presigned_clippedvideopath'] = create_presigned_url(result['_source']['clippedvideopath'])
+    print("Final Search Result : ", search_results)
 
-    return {
-        'statusCode': 200,
-        'body': [result['_source'] for result in search_results]
+    response = {
+        "statusCode": 200,
+        "body": json.dumps({
+            "statusCode": 200,  # Including statusCode inside the body if required
+            "body": search_results
+        }),
+        "headers": {
+            "Access-Control-Allow-Origin": "*"
+        }
     }
+    return response
+
 def search_animals(filters):
     query = {
         "query": {

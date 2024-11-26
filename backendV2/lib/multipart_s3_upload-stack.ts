@@ -476,6 +476,9 @@ export class MultipartS3UploadStack extends cdk.Stack {
         allowOrigins: apigw.Cors.ALL_ORIGINS,                
       },
       policy: apiResourcePolicy,
+      endpointConfiguration: {
+        types: [apigw.EndpointType.REGIONAL]
+      }    
     });
 
     // lambda function  to get the search results from opensearch
