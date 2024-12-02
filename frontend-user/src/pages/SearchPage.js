@@ -12,10 +12,12 @@ import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import { api_baseurl } from "../constants";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
-import { DatePicker } from "antd";
+import { DatePicker, TimePicker } from "antd";
 import VideoCard from "../components/Display/VideoCard";
 import { CartContext } from "../components/CartContext";
+import TimeRangePicker from "../components/Display/TimeRangePicker";
 const { RangePicker } = DatePicker;
+
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={2} square {...props} />)(({ theme }) => ({
   backgroundColor: "#EEECE5",
   "&:not(:last-child)": {
@@ -132,6 +134,7 @@ const SearchPage = () => {
   };
   const [filters, setFilters] = useState(filtersTemplate);
   const [videodate, setVideoDate] = useState([null, null]); // State to hold the selected range
+  const [starttime, setStartTime] = useState([null, null]); // State to hold the selected range
 
   // Helper function to format the date in MM-DD-YYYY
   const formatDate = (tDate) => {
@@ -140,11 +143,32 @@ const SearchPage = () => {
     const day = date.getDate();
     const year = date.getFullYear();
     return `${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}-${year}`;
-  }; // Handle the change event
+  };
+
+  const formatTime = (tDate) => {
+    const date = new Date(tDate);
+    // Get hours, minutes, and seconds
+    let hours = date.getUTCHours(); // UTC hours
+    let minutes = date.getUTCMinutes();
+    let seconds = date.getUTCSeconds();
+
+    // Format the time as "HH:mm:ss"
+    hours = hours < 10 ? "0" + hours : hours; // Add leading zero for single digit hours
+    minutes = minutes < 10 ? "0" + minutes : minutes; // Add leading zero for single digit minutes
+    seconds = seconds < 10 ? "0" + seconds : seconds; // Add leading zero for single digit seconds
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+    return formattedTime;
+  };
+  // Handle the change event
   const onVideoDateChange = (value, dateString) => {
     setVideoDate(value); // Update the state with the new selected range
     const formattedDates = value.map((date) => formatDate(date));
     filterChange(formattedDates, "videodate");
+  };
+  const onStartTimeChange = (value, dateString) => {
+    setStartTime(value); // Update the state with the new selected range
+    const formattedTime = value.map((date) => formatTime(date));
+    filterChange(formattedTime, "starttime");
   };
   const handleAccordianChange = (key) => (event, value) => {
     setExpanded((prev) => {
@@ -201,6 +225,8 @@ const SearchPage = () => {
             onClick={() => {
               setFilters(filtersTemplate); // Reset filters to initial state
               setVideoDate([null, null]); // Reset video date filter
+              setStartTime([null, null]); // Reset video date filter
+
               // setSearchResults([]); // Optionally, clear search results
               // setShowResults(false); // Optionally, hide results
               // setSearchClicked(false); // Reset search clicked state
@@ -471,14 +497,17 @@ const SearchPage = () => {
           </Accordion>
 
           {/* Start Time Filter */}
+
           <Accordion expanded={expanded.starttime} onChange={handleAccordianChange("starttime")}>
             <AccordionSummary aria-controls="panel16d-content" id="panel16d-header">
               <Typography>Start Time</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <div style={{ display: "grid", gap: "10px" }}>
-                <input type="time" />
-                <input type="time" />
+                <TimeRangePicker
+                  value={starttime} // Controlled value, tied to the state
+                  onChange={onStartTimeChange} // Update state on change
+                />
               </div>
             </AccordionDetails>
           </Accordion>
@@ -519,7 +548,3 @@ const SearchPage = () => {
 };
 
 export default SearchPage;
-
-//duration mapping
-//data collection ongoing
-// start date
