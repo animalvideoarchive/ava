@@ -14,7 +14,6 @@ const CartProvider = ({ children }) => {
 
   // Function to remove video from the cart
   const removeVideoFromCart = (videoId) => {
-    debugger;
     setCart((prevCart) => prevCart.filter((item) => item._id !== videoId));
   };
 

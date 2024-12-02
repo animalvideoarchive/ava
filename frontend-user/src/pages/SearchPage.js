@@ -84,7 +84,6 @@ const options = {
   ],
   datacollection: [
     //not in lambda
-
     { label: "Completed", value: "Yes" },
     { label: "Not Collected", value: "No" },
   ],
@@ -447,14 +446,14 @@ const SearchPage = () => {
               </div>
             </AccordionDetails>
           </Accordion>
-
           {/* Data Collection Ongoing Filter */}
+
           <Accordion expanded={expanded.datacollection} onChange={handleAccordianChange("datacollection")}>
-            <AccordionSummary aria-controls="panel14d-content" id="panel14d-header">
+            <AccordionSummary aria-controls="panel6d-content" id="panel6d-header">
               <Typography>Data Collection Ongoing</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <div style={{ display: "grid", gap: " 10px" }}>
+              <div style={{ display: "grid", gap: "10px" }}>
                 <RadioGroup
                   onChange={(e) => {
                     filterChange(e.target.value, "datacollection");
@@ -464,7 +463,7 @@ const SearchPage = () => {
                   name="radio-buttons-group"
                 >
                   {options.datacollection.map((option) => (
-                    <FormControlLabel key={option.value} checked={filters.duration === option.value} value={option.value} control={<Radio />} label={option.label} />
+                    <FormControlLabel key={option.value} checked={filters.datacollection === option.value} value={option.value} control={<Radio />} label={option.label} />
                   ))}
                 </RadioGroup>
               </div>

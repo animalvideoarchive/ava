@@ -6,7 +6,6 @@ import UserAgreement from "./pages/UserAgreement";
 import Confirmation from "./pages/Confirmation";
 import ShoppingCart from "./pages/ShoppingCart";
 import TagDetails from "./pages/TagDetailsUser";
-import SearchResults from "./pages/SearchResults";
 import CartProvider from "./components/CartContext";
 
 const App = () => {
