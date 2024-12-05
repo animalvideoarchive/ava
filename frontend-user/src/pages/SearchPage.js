@@ -188,26 +188,30 @@ const SearchPage = () => {
 
     try {
       const cleanedObj = Object.fromEntries(Object.entries(filters).filter(([_, value]) => value !== ""));
-      // // Make API call with the filters
-      const response = await fetch(api_baseurl + "/GetSearchResults", {
-        method: "POST", // or 'GET', depending on your API
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          filters: cleanedObj,
-        }),
-      });
+      if (Object.keys(cleanedObj).length > 0) {
+        // // Make API call with the filters
+        const response = await fetch(api_baseurl + "/GetSearchResults", {
+          method: "POST", // or 'GET', depending on your API
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            filters: cleanedObj,
+          }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        setSearchResults(data.body); // Adjust based on your API response structure
+        setShowResults(true);
+        console.log("cleanedobj", cleanedObj);
+        console.log("data", data.body);
+      } else {
+        setError("No filters Added");
       }
-
-      const data = await response.json();
-      setSearchResults(data.body); // Adjust based on your API response structure
-      setShowResults(true);
-      console.log("cleanedobj", cleanedObj);
-      console.log("data", data.body);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -520,7 +524,6 @@ const SearchPage = () => {
           <div className="search-bar-wrapper">
             <SearchBar handleSearch={handleSearch} filters filterChange={filterChange} />
           </div>
-
           {/* Search Results Display */}
           {showResults && (
             <div className="results-container">
@@ -541,6 +544,7 @@ const SearchPage = () => {
               </div>
             </div>
           )}
+          <div className="results-container">{error && <h2>{error}</h2>}</div>
         </div>
       </main>
     </div>
