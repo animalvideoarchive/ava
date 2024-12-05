@@ -18,7 +18,7 @@ const UserAgreement = () => {
   const [email, setEmail] = useState("");
   const [whyVideos, setWhyVideos] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const { cart } = useContext(CartContext);
+  const { cart, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleSubmit = () => {
@@ -45,8 +45,13 @@ const UserAgreement = () => {
       .then((response) => response.json())
       .then((data) => {
         navigate("/confirmation");
+        clearCart();
       })
-      .catch((error) => console.error("API error:", error));
+      .catch((error) => {
+        // navigate("/confirmation");
+
+        console.error("API error:", error);
+      });
   };
 
   const handleBackToSearch = () => {

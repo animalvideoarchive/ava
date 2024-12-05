@@ -63,6 +63,8 @@ const Navbar = () => {
       setSelectedTab("search");
     } else if (location.pathname.includes("cart")) {
       setSelectedTab("cart");
+    } else if (location.pathname.includes("confirmation")) {
+      setSelectedTab("cart");
     } else if (!location.pathname.includes("search") && !location.pathname.includes("cart") && cart.length === 0) {
       setSelectedTab("search");
       navigate("/search"); // Navigate to cart page
