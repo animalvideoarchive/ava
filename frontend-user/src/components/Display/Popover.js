@@ -7,7 +7,7 @@ const Popover = ({ addVideo, setAddVideo, isOpen, onClose, id, videoData }) => {
   const { cart, addVideoToCart, removeVideoFromCart } = useContext(CartContext);
   // If the popover is closed, don't render anything
   if (!isOpen || !videoData) return null;
-
+  console.log(videoData);
   // Format the video duration
   const formatDuration = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -106,7 +106,8 @@ const Popover = ({ addVideo, setAddVideo, isOpen, onClose, id, videoData }) => {
   // Video element styling
   const videoStyle = {
     maxWidth: "100%",
-    height: "100%",
+    height: "fit-content",
+    minHeight: "28rem",
   };
 
   return (
@@ -125,8 +126,8 @@ const Popover = ({ addVideo, setAddVideo, isOpen, onClose, id, videoData }) => {
 
           {/* Video Preview on the Right */}
           <div style={videoPreviewStyle}>
-            <video style={videoStyle} controls>
-              <source src={videoData.presigned_clippedvideopath} type="video/mp4" />
+            <video style={videoStyle} controls crossOrigin="anonymous">
+              <source src={videoData.videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>

@@ -529,7 +529,7 @@ const SearchPage = () => {
                 {searchResults.map((result) => (
                   <VideoCard
                     video={result}
-                    key={result.id}
+                    key={result._id}
                     title={result._source.commonname}
                     duration={result._source.duration}
                     date={result._source.videodate}
