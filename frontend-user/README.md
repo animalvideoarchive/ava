@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# Admin Frontend Setup
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The frontend provides a user-friendly interface to search and shop videos. Built using React, it connects with the backend via API calls to manage video searching efficiently
 
-## Available Scripts
+## Setup Guide
 
-In the project directory, you can run:
+1. **Install Dependencies**
 
-### `npm start`
+   - Move to directory contains the required code and run "npm install" to install all dependencies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+     ```
+     cd frontend-user
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+     npm install
+     ```
 
-### `npm test`
+   - This will install all required packages, including AWS Amplify for authentication and API interaction.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. **Configure API Endpoints and Congito Authentication**:
 
-### `npm run build`
+   - Navigate to `frontend-user/src/constants.js` file. Here, update the following fields with the values obtained after deploying your backend infrastructure.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+     ```
+     export const api_baseurl = "https://********.execute-api.us-east-1.amazonaws.com/prod/"; // add the obtained API Gateway endpoint URL for user flow api
+     ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - This step ensures that your frontend application can communicate effectively with the backend services and handle user authentication seamlessly.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Run the Frontend**
+   - To start the application locally, use the following command:
+     ```
+     npm start
+     ```
+   - This will launch the frontend on http://localhost:3000, where you can upload video file and add metadata with vidoes.
 
-### `npm run eject`
+## ☁️ Deploying to AWS Amplify
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Deploying the frontend to AWS Amplify is a great choice for scaling your application and making it accessible online with minimal setup.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Create a build of the app.
+  ```
+     npm run build
+  ```
+- Open build folder on File explorer or Finder.
+- Select **all contents** in the build folder to create a compressed folder.
+- _Make sure to compress the contents of the build folder and not the build folder_
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**While deploying for the first time -**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Go to Amplify
+- Click on "Create new app"
+- Then click on "Deploy without GIT"
+- Click "Next"
+- Add app name, for example "slz_user"
+- Add branch name, for example "prod"
+- Upload the compressed folder to Amplify to deploy the application.
+- Click on "Save and deploy"
+- Click on "Visit Deloyed Url" to access the application
 
-## Learn More
+**In subsequent deployments -**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Go to Amplify
+- Click on existing app
+- Then click on "Deploy updates"
+- Upload the compressed folder to Amplify to deploy the application
+- Click on "Save and deploy"
+- Click on "Visit Deloyed Url" to access the application

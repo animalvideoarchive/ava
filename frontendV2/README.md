@@ -5,16 +5,19 @@ The frontend provides a user-friendly interface for large video uploads and sele
 ## Setup Guide
 
 1. **Install Dependencies**
+
    - Move to directory contains the required code and run "npm install" to install all dependencies
-        ```
+
+     ```
      cd frontendV2
 
      npm install
      ```
+
    - This will install all required packages, including AWS Amplify for authentication and API interaction.
 
+2. **Configure API Endpoints and Congito Authentication**:
 
-3. **Configure API Endpoints and Congito Authentication**:
    - Navigate to `frontendV2/src/constants/constants.js` file. Here, update the following fields with the values obtained after deploying your backend infrastructure.
 
      ```
@@ -31,46 +34,40 @@ The frontend provides a user-friendly interface for large video uploads and sele
 
 3. **Run the Frontend**
    - To start the application locally, use the following command:
-        ```
-        npm start
+     ```
+     npm start
      ```
    - This will launch the frontend on http://localhost:3000, where you can upload video file and add metadata with vidoes.
 
 ## ☁️ Deploying to AWS Amplify
+
 Deploying the frontend to AWS Amplify is a great choice for scaling your application and making it accessible online with minimal setup.
 
-1. **Create an Amplify App**:
+- Create a build of the app.
+  ```
+     npm run build
+  ```
+- Open build folder on File explorer or Finder.
+- Select **all contents** in the build folder to create a compressed folder.
+- _Make sure to compress the contents of the build folder and not the build folder_
 
-   - Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in with your credentials.
+**While deploying for the first time -**
 
-   - In the AWS Management Console's search bar at the top, type `Amplify`.
-   - Select **Amazon Amplify** from the dropdown menu.
-   - Choose **Create new App** 
-   - Connect your GitHub repository (or another version control system).
-   - Select the repository branch (e.g. main)
-   - Select **My app is a monorepo** and enter the folder name **frontendV2**
-   - Configure Build Settings: Amplify will automatically detect your build settings for a React app. If needed, you can customize the amplify.yml file:
+- Go to Amplify
+- Click on "Create new app"
+- Then click on "Deploy without GIT"
+- Click "Next"
+- Add app name, for example "slz_user"
+- Add branch name, for example "prod"
+- Upload the compressed folder to Amplify to deploy the application.
+- Click on "Save and deploy"
+- Click on "Visit Deloyed Url" to access the application
 
-      ```bash
-      version: 1
-      frontend:
-      phases:
-         preBuild:
-            commands:
-            - npm install
-         build:
-            commands:
-            - npm run build
-      artifacts:
-         baseDirectory: /build
-         files:
-            - '**/*'
-      cache:
-         paths:
-            - node_modules/**/*
-      ```
+**In subsequent deployments -**
 
-2. **Deploy**:
-
-- After setting up, Amplify will automatically build and deploy your application.
-- You will be provided with a live URL to access the frontend.
+- Go to Amplify
+- Click on existing app
+- Then click on "Deploy updates"
+- Upload the compressed folder to Amplify to deploy the application
+- Click on "Save and deploy"
+- Click on "Visit Deloyed Url" to access the application
