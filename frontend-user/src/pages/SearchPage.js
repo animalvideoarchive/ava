@@ -206,11 +206,10 @@ const SearchPage = () => {
 
         const data = await response.json();
         setSearchResults(data.body); // Adjust based on your API response structure
+        setError("");
         setShowResults(true);
-        console.log("cleanedobj", cleanedObj);
-        console.log("data", data.body);
       } else {
-        setError("No filters Added");
+        setError("No Filters Added");
       }
     } catch (err) {
       setError(err.message);
@@ -230,7 +229,7 @@ const SearchPage = () => {
               setFilters(filtersTemplate); // Reset filters to initial state
               setVideoDate([null, null]); // Reset video date filter
               setStartTime([null, null]); // Reset video date filter
-
+              setError("");
               // setSearchResults([]); // Optionally, clear search results
               // setShowResults(false); // Optionally, hide results
               // setSearchClicked(false); // Reset search clicked state
