@@ -5,8 +5,6 @@ import os
 # Initialize AWS SES client
 ses_client = boto3.client('ses')
 
-# Sender's email address
-# SENDER_EMAIL = "amanda34@asu.edu"  # Replace with actual sender email
 SENDER_EMAIL = os.getenv('SENDER_EMAIL')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
 
@@ -85,8 +83,12 @@ def lambda_handler(event, context):
             }
         )
 
+        print("Response : ",response)
         return {
             'statusCode': 200,
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            },
             'body': json.dumps({
                 'message': 'Email sent successfully!',
                 'response': response
@@ -94,6 +96,7 @@ def lambda_handler(event, context):
         }
 
     except ClientError as e:
+        print("Client error : ", e)
         return {
             'statusCode': 500,
             'body': json.dumps({
@@ -102,6 +105,7 @@ def lambda_handler(event, context):
             })
         }
     except Exception as e:
+        print("Exception : ", e)
         return {
             'statusCode': 500,
             'body': json.dumps({

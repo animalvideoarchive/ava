@@ -8,11 +8,6 @@ import os
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# # OpenSearch connection details
-# host = "5l4wsbb0dl1hbfx82bxi.us-east-1.aoss.amazonaws.com"
-# region = 'us-east-1'  # replace with your region
-# index_name = 'zoo-metadata-collection-index'  # OpenSearch index name
-
 index_name = os.getenv('INDEX_NAME')
 region = os.getenv('AWS_REGION')
 OPENSEARCH_COLLECTION_ENDPOINT = os.getenv('COLLECTION_ENDPOINT')
@@ -37,10 +32,8 @@ opensearch_client = OpenSearch(
 s3_client = boto3.client('s3')
 
 def lambda_handler(event, context):
-    # Validate input
-    print("Event ", event)
+    print("Event : ", event)
     body = json.loads(event["body"])
-    print("Body ",body)
     if 'filters' not in body:
         return {
             'statusCode': 400,
@@ -94,6 +87,24 @@ def search_animals(filters):
         "3 - 5 Hr": (10800, 18000),
         "> 5 Hr": (18000, 99999999)  # Assuming this is effectively the upper limit
     }
+    if 'duration' in filters and filters['duration'] is not None:
+    # Get the duration range based on the filter value
+        duration_range = duration_mapping.get(filters['duration'])
+    
+        if duration_range:
+            lower_bound, upper_bound = duration_range
+            
+            # Convert string duration to numeric seconds and apply range filter
+            query['query']['bool']['filter'].append({
+                "range": {
+                    "duration": {
+                        "gte": lower_bound,  # Convert lower bound to string (if needed)
+                        "lte": upper_bound   # Convert upper bound to string (if needed)
+                    }
+                }
+            })
+            print(query)
+
     # Adding other filters
     if 'keyword' in filters:
         query['query']['bool']['must'].append({
@@ -112,10 +123,10 @@ def search_animals(filters):
                 "operator": "and"
             }
         })
-    if 'zooOrAquarium' in filters:
+    if 'zoooraquarium' in filters:
         query['query']['bool']['filter'].append({
             "term": {
-                "zooOrAquarium": filters['zooOrAquarium']
+                "zoooraquarium": filters['zoooraquarium']
             }
         })
     if 'commonname' in filters:
@@ -165,6 +176,18 @@ def search_animals(filters):
                 "ageofindividuals": filters['ageofindividuals']
             }
         })
+    if 'videocontext' in filters:
+        query['query']['bool']['filter'].append({
+            "match_phrase": {
+                "videocontext": filters['videocontext']
+            }
+        })
+    if 'datacollection' in filters:
+        query['query']['bool']['filter'].append({
+            "match_phrase": {
+                "datacollectionstatus": filters['datacollection']
+            }
+        })
     if 'animalvisibility' in filters:
         if filters['animalvisibility'] == 'publicly viewable':
             query['query']['bool']['filter'].append({
@@ -178,21 +201,6 @@ def search_animals(filters):
                     "animalvisibility": 'Behind-the-scenes'
                 }
             })
-    if 'duration' in filters and filters['duration'] is not None:
-        duration_range = duration_mapping.get(filters['duration'])
-        
-        if duration_range:
-            lower_bound, upper_bound = duration_range
-            
-            query['query']['bool']['filter'].append({
-                "range": {
-                    "duration": {
-                        "gte": lower_bound ,  
-                        "lte": upper_bound
-                    }
-                }
-            })
-            print(query)
     if 'videodate' in filters:
         
         start_date = datetime.strptime(filters['videodate'][0], '%m-%d-%Y').strftime('%m-%d-%Y')
