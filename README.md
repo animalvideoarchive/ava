@@ -156,8 +156,10 @@ Access the [AWS Management Console](https://aws.amazon.com/console/) and sign in
 - To add a new user, click **Create user**.
   - Ensure that for field "Alias attributes used to sign in"
     **Email** is selected
-  - Fill in the required fields such as username, email (as required by your user pool settings), and password.
+  - Select **Send an email invitation**
+  - Fill in the required fields such as username, email (as required by your user pool settings).
   - Ensure to set the **Mark email as verified** if email is a required attribute.
+  - Enter the **password**
   - Click **Create user**.
 
 ### 5. Using the Admin Credentials
