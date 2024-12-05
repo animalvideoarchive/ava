@@ -21,7 +21,7 @@ const Navbar = () => {
     fontFamily: "Metapro Normal, sans-serif",
     position: "sticky", // Makes the Navbar sticky
     top: "0", // Sticks the Navbar to the top of the page
-    zIndex: "1000",
+    zIndex: "1",
     height: "50px",
   };
 

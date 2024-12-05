@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
-import ToggleButton from '../Buttons/ToggleButton';
-import Popover from './Popover';
+import React, { useContext, useEffect, useState } from "react";
+import ToggleButton from "../Buttons/ToggleButton";
+import Popover from "./Popover";
+import { CartContext } from "../CartContext";
 
 const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
+  const [addVideo, setAddVideo] = useState(false);
+  const { cart, removeVideoFromCart, addVideoToCart } = useContext(CartContext);
+  useEffect(() => {
+    let check = false;
+    for (let i = 0; i < cart.length; i++) {
+      if (cart[i] === video._id) {
+        check = true;
+        break;
+      }
+    }
+    setAddVideo(check);
+  }, [addVideo]);
   // Function to handle opening the popover
   const handleThumbnailClick = () => {
     setIsPopoverOpen(true);
+  };
+
+  const onClickAdd = (bAdd) => {
+    if (bAdd) addVideoToCart(video._id);
+    else removeVideoFromCart(video._id);
+    setAddVideo(bAdd);
   };
 
   // Function to handle closing the popover
@@ -18,61 +36,61 @@ const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl
   const formatDuration = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours > 0 ? `${hours}h ` : ''}${minutes}m`;
+    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m`;
   };
 
   const videoContainerStyle = {
-    height: '225px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '270px',
-    padding: '10px',
-    borderRadius: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    background: '#EEECE5',
-    margin: '2px',
+    height: "225px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "270px",
+    padding: "10px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    background: "#EEECE5",
+    margin: "2px",
   };
 
   const thumbnailStyle = {
-    width: '100%',
-    height: '125px',
-    borderRadius: '10px',
-    objectFit: 'cover',
-    cursor: 'pointer',
+    width: "100%",
+    height: "125px",
+    borderRadius: "10px",
+    objectFit: "cover",
+    cursor: "pointer",
   };
 
   const videoInfoContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    width: '100%',
-    marginTop: '20px',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: "100%",
+    marginTop: "20px",
   };
 
   const titleStyle = {
-    fontSize: '15px',
-    fontWeight: 'bold',
+    fontSize: "15px",
+    fontWeight: "bold",
   };
 
   const metaDataContainerStyle = {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   };
 
   const metaDataStyle = {
-    fontSize: '10px',
-    color: '#666',
-    marginRight: '20px',
+    fontSize: "10px",
+    color: "#666",
+    marginRight: "20px",
   };
 
   return (
     <div style={videoContainerStyle}>
       {/* Thumbnail with click handler */}
-      <div style={{ width: '100%' }} onClick={handleThumbnailClick}>
+      <div style={{ width: "100%" }} onClick={handleThumbnailClick}>
         <img src={thumbnailUrl} alt={title} style={thumbnailStyle} />
       </div>
 
@@ -89,17 +107,13 @@ const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl
 
           {/* ToggleButton */}
           <div>
-            <ToggleButton video={video}/>
+            <ToggleButton video={video} setAddVideo={onClickAdd} addVideo={addVideo} />
           </div>
         </div>
       </div>
 
       {/* Popover component for video preview */}
-      <Popover
-        isOpen={isPopoverOpen}
-        onClose={handlePopoverClose}
-        videoData={{ title, duration, date, videoUrl }}
-      />
+      <Popover addVideo={addVideo} setAddVideo={onClickAdd} isOpen={isPopoverOpen} onClose={handlePopoverClose} videoData={{ title, duration, date, videoUrl }} id={video._id} />
     </div>
   );
 };

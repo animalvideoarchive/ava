@@ -32,7 +32,7 @@
 
 .accordion-container {
   overflow-y: auto;
-  max-height: 80vh;
+  max-height: calc(100vh - 8rem);
   padding-right: 10px;
 }
 

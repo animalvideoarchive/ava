@@ -67,11 +67,11 @@ const CartDisplay = ({ videos = [], onRemove }) => {
           videos.map((video, index) => (
             <React.Fragment key={index}>
               <div style={videoContainerStyle}>
-                <img src={video._source.presigned_thumbnailstartpath} alt={video.commonname || "Thumbnail"} style={{ width: "120px", height: "80px" }} />
+                <img src={video?._source.presigned_thumbnailstartpath} alt={video.commonname || "Thumbnail"} style={{ width: "120px", height: "80px" }} />
                 <div style={videoInfoStyle}>
-                  <span style={videoTitleStyle}>{video._source.commonname || "Unknown Title"}</span>
-                  <span style={videoDurationStyle}>Duration: {secondsToTimeString(video._source.duration) || "Unknown Duration"}</span>
-                  <span style={videoDateStyle}>Date: {video._source.videodate || "Unknown Date"}</span>
+                  <span style={videoTitleStyle}>{video?._source.commonname || "Unknown Title"}</span>
+                  <span style={videoDurationStyle}>Duration: {secondsToTimeString(video?._source.duration) || "Unknown Duration"}</span>
+                  <span style={videoDateStyle}>Date: {video?._source.videodate || "Unknown Date"}</span>
                   <div style={removeButtonStyle} onClick={() => onRemove(video._id)}>
                     Remove <img src={deleteIcon} alt="Delete Icon" style={deleteIconStyle} />
                   </div>
