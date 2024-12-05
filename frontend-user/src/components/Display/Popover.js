@@ -29,12 +29,12 @@ const Popover = ({ addVideo, setAddVideo, isOpen, onClose, id, videoData }) => {
     if (addVideo) {
       let check = false;
       for (let i = 0; i < cart.length; i++) {
-        if (cart[i] === id) {
+        if (cart[i]._id === id) {
           check = true;
           break;
         }
       }
-      if (!check) addVideoToCart(id);
+      if (!check) addVideoToCart(videoData);
     } else {
       removeVideoFromCart(id);
     }

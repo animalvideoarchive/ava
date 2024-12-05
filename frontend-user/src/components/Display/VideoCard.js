@@ -10,7 +10,7 @@ const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl
   useEffect(() => {
     let check = false;
     for (let i = 0; i < cart.length; i++) {
-      if (cart[i] === video._id) {
+      if (cart[i]._id === video._id) {
         check = true;
         break;
       }
@@ -23,7 +23,7 @@ const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl
   };
 
   const onClickAdd = (bAdd) => {
-    if (bAdd) addVideoToCart(video._id);
+    if (bAdd) addVideoToCart(video);
     else removeVideoFromCart(video._id);
     setAddVideo(bAdd);
   };

@@ -15,7 +15,7 @@ const CartProvider = ({ children }) => {
   // Function to remove video from the cart
   const removeVideoFromCart = (videoId) => {
     setCart((prevCart) => {
-      return prevCart.filter((id) => id !== videoId);
+      return prevCart.filter((id) => id._id !== videoId);
     });
   };
 
