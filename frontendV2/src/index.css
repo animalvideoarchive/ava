@@ -1,15 +1,12 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 .header {
@@ -18,8 +15,7 @@ code {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -33,23 +29,20 @@ code {
   font-weight: bold;
 }
 
-
 .logo img {
-  height: 60px;  /* Adjust height as needed to fit your design */
-  width: auto;  /* Keeps the aspect ratio of the image */
+  height: 60px; /* Adjust height as needed to fit your design */
+  width: auto; /* Keeps the aspect ratio of the image */
   margin-right: 10px;
   background-color: transparent;
-
 }
 
 nav ul {
   list-style: none;
   display: flex;
   padding: 0;
-  align-items: center;  /* Ensures items in the nav are aligned with the logo */
+  align-items: center; /* Ensures items in the nav are aligned with the logo */
   gap: 20px;
 }
-
 
 nav ul li {
   margin-left: 20px;
@@ -157,7 +150,8 @@ nav li.active {
   margin-top: 20px;
 }
 
-.back-button, .next-button {
+.back-button,
+.next-button {
   padding: 10px 20px;
   margin: 0 10px;
   cursor: pointer;
@@ -166,19 +160,6 @@ nav li.active {
 .next-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Dim the background */
-  z-index: 1000; /* High z-index to ensure it's on top */
 }
 
 .modal-content {
@@ -312,11 +293,11 @@ button:disabled {
   color: #f8a228;
 }
 
-.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+.css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
   color: #f8a228;
 }
 
-.MuiStepIcon-root.Mui-active{
+.MuiStepIcon-root.Mui-active {
   color: #f8a228;
 }
 
@@ -366,7 +347,7 @@ textarea {
   font-size: 15px;
 }
 
-.textField{
+.textField {
   border: 1px solid #ccc;
 }
 
@@ -389,7 +370,6 @@ label {
 .required {
   color: red;
 }
-
 
 /* Tooltip styling */
 .tooltip {
@@ -429,14 +409,13 @@ textarea:focus {
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .split-container {
-      flex-direction: column;
+    flex-direction: column;
   }
-  
+
   .split-name {
-      flex-direction: column;
+    flex-direction: column;
   }
 }
-
 
 .form-container {
   display: flex;
@@ -445,7 +424,7 @@ textarea:focus {
   margin: auto;
   gap: 50px;
   background-color: #f6f4ee;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .form-section {
@@ -460,20 +439,23 @@ textarea:focus {
   gap: 15px;
 }
 
-.options{
+.options {
   padding-top: 10px;
 }
 
-input[type="text"], input[type="radio"], input[type="checkbox"], textarea {
+input[type="text"],
+input[type="radio"],
+input[type="checkbox"],
+textarea {
   margin-top: 5px;
   vertical-align: bottom;
   accent-color: orange;
 }
 
-input[type="radio"], input[type="checkbox"] {
+input[type="radio"],
+input[type="checkbox"] {
   margin-right: 10px;
 }
-
 
 .uploader-container {
   display: flex;
@@ -484,7 +466,8 @@ input[type="radio"], input[type="checkbox"] {
   background-color: #f6f4ee; /* Matching background color */
 }
 
-.drop-zone, .file-display {
+.drop-zone,
+.file-display {
   width: 60%;
   /* height: 50vh; */
   min-height: 45vh;
@@ -504,15 +487,14 @@ input[type="radio"], input[type="checkbox"] {
 
 .drop-zone {
   background-color: white;
-    /* min-height: 350px; */
-    min-height: 45vh;
-
+  /* min-height: 350px; */
+  min-height: 45vh;
 }
 
 .drop-zone::before {
-  content: '';
-  background-image: '/Users/et/Desktop/ASU_CIC/St-Louis-Zoo/frontendV2/src/assets/logo.png';
-/* Add your upload image path here */
+  content: "";
+  background-image: "/Users/et/Desktop/ASU_CIC/St-Louis-Zoo/frontendV2/src/assets/logo.png";
+  /* Add your upload image path here */
   background-size: 100px;
   background-repeat: no-repeat;
   background-position: center;
@@ -523,7 +505,8 @@ input[type="radio"], input[type="checkbox"] {
   opacity: 0.2; /* Transparency for the image */
 }
 
-.drop-zone p, .browse-link {
+.drop-zone p,
+.browse-link {
   z-index: 2; /* Keeping the text above the background image */
 }
 
@@ -539,7 +522,6 @@ input[type="radio"], input[type="checkbox"] {
   max-height: 800px;
   border: none; /* Removing the border when displaying files */
   justify-content: flex-start;
-
 }
 
 .add-button {
@@ -558,7 +540,7 @@ input[type="radio"], input[type="checkbox"] {
   right: 10px;
   font-size: 13px;
   color: #888;
-} 
+}
 
 /* Buttons */
 .button-group {
@@ -567,7 +549,8 @@ input[type="radio"], input[type="checkbox"] {
   width: 100%;
 }
 
-.back-button, .next-button {
+.back-button,
+.next-button {
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 4px;
@@ -585,10 +568,10 @@ input[type="radio"], input[type="checkbox"] {
   color: #721c24;
   background-color: #f8d7da;
   border-color: #f5c6cb;
-  padding: .75rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   margin-top: 10px;
   border: 1px solid transparent;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   font-size: 1rem;
   align-self: flex-start;
 
@@ -612,7 +595,7 @@ input[type="radio"], input[type="checkbox"] {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 50%;
   max-width: 600px;
   text-align: center;
@@ -662,7 +645,6 @@ input[type="radio"], input[type="checkbox"] {
   justify-content: space-between;
   margin-bottom: 20px;
   gap: 25px;
-
 }
 
 .stats-content {
@@ -673,13 +655,13 @@ input[type="radio"], input[type="checkbox"] {
   padding: 20px;
 }
 
-.video-header{
+.video-header {
   font-weight: bold;
   font-size: 16px;
 }
 
 .upload-success {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .upload-failed {
@@ -696,7 +678,7 @@ input[type="radio"], input[type="checkbox"] {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  align-self: center
+  align-self: center;
 }
 
 .admin-button {
@@ -706,19 +688,19 @@ input[type="radio"], input[type="checkbox"] {
   cursor: pointer;
 }
 
-.MuiTypography-root{
+.MuiTypography-root {
   font-size: 1rem;
   /* padding-left: 40px; */
 }
 
-.MuiTextField-root{
+.MuiTextField-root {
   border: none;
 }
 
-.MuiOutlinedInput-input{
+.MuiOutlinedInput-input {
   border: none;
 }
 
-.a-remove-button{
+.a-remove-button {
   display: none;
 }

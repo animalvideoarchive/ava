@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 // Create Context
 export const CartContext = createContext();
@@ -14,7 +14,9 @@ const CartProvider = ({ children }) => {
 
   // Function to remove video from the cart
   const removeVideoFromCart = (videoId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== videoId));
+    setCart((prevCart) => {
+      return prevCart.filter((id) => id._id !== videoId);
+    });
   };
 
   // Function to clear the cart
@@ -22,11 +24,7 @@ const CartProvider = ({ children }) => {
     setCart([]);
   };
 
-  return (
-    <CartContext.Provider value={{ cart, addVideoToCart, removeVideoFromCart, clearCart }}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={{ cart, addVideoToCart, removeVideoFromCart, clearCart }}>{children}</CartContext.Provider>;
 };
 
 export default CartProvider;
