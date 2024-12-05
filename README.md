@@ -83,6 +83,9 @@ Before running the AWS CDK stack, ensure the following are installed and configu
 5. **AWS CLI**: To interact with AWS services and set up credentials.
 
    - Install and configure [AWS CLI](https://aws.amazon.com/cli/)
+   - Generate AWS Access keys and secret key for your AWS Account
+   - Setup credentials using the command and follow next steps to configure authentication.
+     ```aws configure```
 
 6. **AWS CDK**: For defining cloud infrastructure in code.
 
