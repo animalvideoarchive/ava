@@ -533,6 +533,12 @@ export class MultipartS3UploadStack extends cdk.Stack {
       identity: ses.Identity.email(senderEmailAddress),
       configurationSet: configSet,
     });
+
+    // SES Email Admin Identity
+    const emailIdentityAdmin = new ses.EmailIdentity(this, 'AdminEmailIdentity', {
+      identity: ses.Identity.email(adminEmailAddress),
+      configurationSet: configSet,
+    });
     
     sendEmailLambda.addToRolePolicy(new iam.PolicyStatement({
       actions: [
