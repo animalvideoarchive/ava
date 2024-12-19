@@ -102,7 +102,7 @@ Before running the AWS CDK stack, ensure the following are installed and configu
 ```
 ├── backendV2 (Backend CDK code for AWS infrastructure and code that handles data processing and storage)
 ├── frontendV2 (UI React application for the administrative interface to upload and tag videos.)
-└── userFlowFrontend (UI React application that allows end users to search and view video previews.)
+└── frontend-user (UI React application that allows end users to search and view video previews.)
 ```
 
 ## Setup and Deployment
