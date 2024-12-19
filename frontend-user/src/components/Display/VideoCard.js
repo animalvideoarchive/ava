@@ -34,9 +34,24 @@ const VideoCard = ({ video, index, title, duration, date, videoUrl, thumbnailUrl
   };
 
   const formatDuration = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m`;
+    // Convert input to a number and validate
+    const numSeconds = Number(seconds);
+    if (isNaN(numSeconds) || numSeconds < 0) {
+      return "Invalid input";
+    }
+
+    const totalMinutes = Math.floor(numSeconds / 60); // Total minutes
+    const remainingSeconds = (numSeconds % 60).toFixed(0); // Remaining seconds
+
+    if (totalMinutes < 60) {
+      // If less than an hour, return minutes and seconds
+      return `${totalMinutes}min ${remainingSeconds}s`;
+    } else {
+      // Convert to hours and minutes
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return `${hours}hr ${minutes}min`;
+    }
   };
 
   const videoContainerStyle = {
