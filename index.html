@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zoological Video Database (ZVDB)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #13c7ff 0%, #8c62ff 100%);
+      --deep-blue: #031c3a;
+      --sky: #f2f9ff;
+      --accent: #fbd437;
+      --mint: #6ff0c4;
+      --soft-purple: #d8ccff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--sky);
+      color: var(--deep-blue);
+      overflow-x: hidden;
+    }
+
+    header {
+      background: var(--bg-gradient);
+      color: #fff;
+      padding: 5rem 1.5rem 6rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      height: 400px;
+      width: 400px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      top: -150px;
+      right: -120px;
+    }
+
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      font-weight: 300;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0.75rem auto 2rem;
+    }
+
+    .hero .cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.85rem 2rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: var(--deep-blue);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+      padding: 5rem 1.5rem 6rem;
+    }
+
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 28px;
+      padding: 3.5rem 3rem;
+      box-shadow: 0 24px 50px rgba(3, 28, 58, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      height: 160px;
+      width: 160px;
+      border-radius: 50%;
+      background: var(--soft-purple);
+      opacity: 0.18;
+      top: -80px;
+      left: -70px;
+    }
+
+    section::after {
+      content: "";
+      position: absolute;
+      height: 220px;
+      width: 220px;
+      border-radius: 50%;
+      background: var(--mint);
+      opacity: 0.12;
+      bottom: -110px;
+      right: -90px;
+    }
+
+    section h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      margin-bottom: 1.5rem;
+    }
+
+    section p, section li {
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .highlight {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--deep-blue);
+      border-radius: 12px;
+      padding: 0.35rem 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .feature {
+      background: rgba(19, 199, 255, 0.07);
+      border-radius: 20px;
+      padding: 1.8rem 1.6rem;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature::after {
+      content: "";
+      position: absolute;
+      height: 90px;
+      width: 90px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      bottom: -45px;
+      right: -40px;
+    }
+
+    .feature h3 {
+      margin-bottom: 0.6rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--deep-blue);
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .stat {
+      flex: 1 1 220px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 1.8rem;
+      box-shadow: inset 0 0 0 2px rgba(19, 199, 255, 0.2);
+      text-align: center;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--deep-blue);
+    }
+
+    .stat small {
+      display: block;
+      margin-top: 0.35rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .ecosystem {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.75rem;
+      margin-top: 2rem;
+    }
+
+    .ecosystem-card {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 2rem 1.75rem;
+      border: 1px solid rgba(3, 28, 58, 0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    .ecosystem-card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.15rem;
+      color: var(--deep-blue);
+    }
+
+    .cta-section {
+      background: var(--bg-gradient);
+      color: #fff;
+      text-align: center;
+      padding: 4rem 2rem 4.5rem;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before,
+    .cta-section::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .cta-section::before {
+      height: 340px;
+      width: 340px;
+      top: -120px;
+      left: -140px;
+    }
+
+    .cta-section::after {
+      height: 400px;
+      width: 400px;
+      bottom: -180px;
+      right: -160px;
+    }
+
+    .cta-section h2 {
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem 3rem;
+      font-size: 0.9rem;
+      color: rgba(3, 28, 58, 0.6);
+    }
+
+    @media (max-width: 768px) {
+      section {
+        padding: 2.75rem 1.75rem;
+      }
+
+      .hero .cta-group {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <div class="highlight">Introducing ZVDB</div>
+      <h1>Empower Zoo Research With Intelligent Video Insight</h1>
+      <p>
+        The Zoological Video Database (ZVDB) equips animal behavior teams with a unified platform for large-scale video ingestion, metadata enrichment, and cost-optimized cloud storage. Preserve history, accelerate analysis, and collaborate across departments—all in a modern, intuitive workspace.
+      </p>
+      <div class="cta-group">
+        <button class="btn btn-primary">Learn more</button>
+        <button class="btn btn-secondary">Get started</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="vision">
+      <span class="highlight">Why ZVDB?</span>
+      <h2>Designed For Zoological Research At Scale</h2>
+      <p>
+        ZVDB bridges the gap between high-volume video archives and actionable science. Built alongside leading zoos, it simplifies
+        the discovery of relevant footage, standardizes metadata capture, and ensures long-term stewardship through automated
+        lifecycle policies. From curator dashboards to analysis-ready exports, every touchpoint balances power with ease-of-use.
+      </p>
+      <div class="features">
+        <div class="feature">
+          <h3>Guided Metadata</h3>
+          <p>
+            Apply behavioral labels, species taxonomy, and husbandry context with reusable templates. Keep records accurate across
+            teams while reducing manual data entry.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>Smart Search</h3>
+          <p>
+            Pinpoint clips by animal, enclosure, time range, or research status using rich filters that query synchronized DynamoDB and
+            AppSync datasets in real time.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>Glacier Savings</h3>
+          <p>
+            Automated lifecycle rules move archival footage to Amazon S3 Glacier Deep Archive while keeping preview assets instantly available.
+          </p>
+        </div>
+        <div class="feature">
+          <h3>Secure Sharing</h3>
+          <p>
+            AppSync-backed permissions and download carts streamline approvals, ensuring sensitive media stays within trusted teams and partner institutions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <span class="highlight">Architecture Snapshot</span>
+      <h2>Cloud-Native From Camera Trap To Curated Collection</h2>
+      <p>
+        ZVDB combines an AWS CDK-driven backend with a React + Apollo Client frontend. Together they deliver consistent deployments,
+        scalable performance, and a best-in-class user experience for animal behavior specialists.
+      </p>
+      <div class="ecosystem">
+        <div class="ecosystem-card">
+          <h3>AWS Foundations</h3>
+          <ul>
+            <li>AppSync GraphQL API orchestrates queries and mutations.</li>
+            <li>Lambda functions handle video ingest, tagging, and presigned URL delivery.</li>
+            <li>DynamoDB stores users, videos, collections, and download requests.</li>
+            <li>S3 lifecycle policies shift footage to Glacier Deep Archive automatically.</li>
+          </ul>
+        </div>
+        <div class="ecosystem-card">
+          <h3>Frontend Experience</h3>
+          <ul>
+            <li>React SPA with Material UI and thematic context switching.</li>
+            <li>Apollo Client caches AppSync responses for instant browsing.</li>
+            <li>Upload manager supports simultaneous large video transfers.</li>
+            <li>Dynamic dashboards expose request KPIs and curation insights.</li>
+          </ul>
+        </div>
+        <div class="ecosystem-card">
+          <h3>Operational Confidence</h3>
+          <ul>
+            <li>GitHub workflows automate CDK deployments and frontend releases.</li>
+            <li>Terraform provisions static hosting with CloudFront edge delivery.</li>
+            <li>Cognito secures identity, while IAM fine-tunes service access.</li>
+            <li>Observability via CloudWatch and structured logging in Lambda.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="impact">
+      <span class="highlight">Impact Metrics</span>
+      <h2>Built To Scale With Every Collection</h2>
+      <p>
+        Whether you steward a century of animal footage or oversee daily enrichment logs, ZVDB ensures assets remain discoverable,
+        auditable, and ready for the next scientific breakthrough.
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <span>2 TB</span>
+          <small>Archival Footage Optimized</small>
+        </div>
+        <div class="stat">
+          <span>4x</span>
+          <small>Faster Metadata Capture</small>
+        </div>
+        <div class="stat">
+          <span>70%</span>
+          <small>Storage Savings With Glacier</small>
+        </div>
+        <div class="stat">
+          <span>24/7</span>
+          <small>Research Team Access</small>
+        </div>
+      </div>
+    </section>
+
+    <section id="cta" class="cta-section">
+      <h2>Ready To Unlock Your Zoo's Video Legacy?</h2>
+      <p>
+        Partner with the Zoological Video Database team to launch a unified, secure, and future-proof archive that keeps your animal
+        research at the forefront.
+      </p>
+      <div class="cta-group" style="justify-content: center; margin-top: 1.8rem;">
+        <button class="btn btn-primary">Request Pilot Access</button>
+        <button class="btn btn-secondary" style="border-color: rgba(255,255,255,0.6);">Download Solution Brief</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Zoological Video Database · Crafted for animal behavior research teams.
+  </footer>
+
+  <script>
+    const yearEl = document.getElementById('year');
+    yearEl.textContent = new Date().getFullYear();
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const fadeUp = (target, delay = 0) => {
+      gsap.from(target, {
+        y: 70,
+        opacity: 0,
+        duration: 1,
+        ease: 'power3.out',
+        delay,
+        scrollTrigger: {
+          trigger: target,
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+    };
+
+    // Hero reveal
+    gsap.from('.hero h1', { y: 80, opacity: 0, duration: 1.2, ease: 'power3.out' });
+    gsap.from('.hero p', { y: 50, opacity: 0, duration: 1, delay: 0.3, ease: 'power3.out' });
+    gsap.from('.hero .cta-group .btn', {
+      opacity: 0,
+      y: 30,
+      duration: 0.6,
+      ease: 'power3.out',
+      stagger: 0.15,
+      delay: 0.55
+    });
+
+    // Section animations
+    fadeUp('#vision');
+    fadeUp('#architecture');
+    fadeUp('#impact');
+    fadeUp('#cta');
+
+    // Feature cards hover pulse
+    document.querySelectorAll('.feature').forEach((card, index) => {
+      card.addEventListener('mouseenter', () => {
+        gsap.to(card, { scale: 1.03, duration: 0.3, ease: 'power2.out' });
+      });
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, { scale: 1, duration: 0.3, ease: 'power2.out' });
+      });
+
+      gsap.from(card, {
+        y: 60,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'power3.out',
+        delay: 0.3 + index * 0.1,
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none reverse'
+        }
+      });
+    });
+
+    // Stats count up animation
+    const statElements = document.querySelectorAll('.stat span');
+    statElements.forEach((stat) => {
+      const targetText = stat.textContent.trim();
+      const numeric = parseFloat(targetText);
+      if (Number.isNaN(numeric)) {
+        return;
+      }
+
+      ScrollTrigger.create({
+        trigger: stat,
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          const obj = { value: 0 };
+          gsap.to(obj, {
+            value: numeric,
+            duration: 1.8,
+            ease: 'power1.out',
+            onUpdate: () => {
+              stat.textContent = obj.value.toFixed(targetText.includes('TB') ? 1 : 0);
+            },
+            onComplete: () => {
+              stat.textContent = targetText;
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
