@@ -11,12 +11,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #13c7ff 0%, #8c62ff 100%);
-      --deep-blue: #031c3a;
-      --sky: #f2f9ff;
-      --accent: #fbd437;
-      --mint: #6ff0c4;
-      --soft-purple: #d8ccff;
+      --navy: #2f466c;
+      --navy-soft: #3e587e;
+      --orange: #ed5832;
+      --neutral: #efece5;
+      --khaki: #cfcbbf;
+      --cream: #f7f3eb;
+      --text: #464647;
+      --muted: #6f6f70;
+      --white: #ffffff;
+      --card-shadow: 0 28px 60px rgba(47, 70, 108, 0.12);
     }
 
     * {
@@ -26,247 +30,357 @@
     }
 
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: var(--sky);
-      color: var(--deep-blue);
+      font-family: 'ff-meta-web-pro', 'Segoe UI', Roboto, sans-serif;
+      background: var(--neutral);
+      color: var(--text);
+      letter-spacing: -0.01em;
       overflow-x: hidden;
     }
 
     header {
-      background: var(--bg-gradient);
-      color: #fff;
-      padding: 5rem 1.5rem 6rem;
+      background: radial-gradient(circle at top left, var(--navy-soft), var(--navy));
+      color: var(--white);
+      padding: 5rem 1.5rem 5.5rem;
       position: relative;
       overflow: hidden;
     }
 
+    header::before,
     header::after {
       content: "";
       position: absolute;
-      height: 400px;
-      width: 400px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      top: -150px;
-      right: -120px;
+      opacity: 0.16;
+    }
+
+    header::before {
+      height: 360px;
+      width: 360px;
+      top: -160px;
+      left: -140px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    header::after {
+      height: 420px;
+      width: 420px;
+      right: -160px;
+      bottom: -220px;
+      background: rgba(239, 236, 229, 0.18);
     }
 
     .hero {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      text-align: center;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 3rem;
+      align-items: center;
       position: relative;
       z-index: 1;
     }
 
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
     .hero h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+      font-family: 'Elephont-Bold', 'Georgia', serif;
+      font-size: clamp(2.8rem, 5vw, 4.75rem);
+      letter-spacing: -0.035em;
+      line-height: 1.02;
     }
 
     .hero p {
-      font-weight: 300;
-      font-size: 1.1rem;
+      font-size: 1.125rem;
       line-height: 1.7;
-      max-width: 760px;
-      margin: 0.75rem auto 2rem;
+      max-width: 560px;
+      color: rgba(255, 255, 255, 0.85);
     }
 
     .hero .cta-group {
       display: flex;
-      justify-content: center;
-      gap: 1.25rem;
+      gap: 1rem;
       flex-wrap: wrap;
+      justify-content: flex-start;
+      margin-top: 1.25rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      border-radius: 28px;
+      padding: 1.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 28px 65px rgba(13, 34, 60, 0.28);
+      overflow: hidden;
+    }
+
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      height: 140px;
+      width: 140px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      bottom: -60px;
+      right: -40px;
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 18px 36px rgba(16, 38, 58, 0.35);
     }
 
     .btn {
-      padding: 0.85rem 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.65rem 1.85rem;
       border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
+      border: 4px solid transparent;
+      font-weight: 700;
       font-size: 1rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
     }
 
     .btn-primary {
-      background: #fff;
-      color: var(--deep-blue);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+      background: var(--white);
+      color: var(--navy);
+      border-color: var(--white);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .btn-primary:hover {
+      background: var(--neutral);
+      color: #000000;
+      transform: translateY(-4px);
+      box-shadow: 0 20px 34px rgba(0, 0, 0, 0.22);
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: transparent;
+      color: var(--white);
+      border-color: rgba(255, 255, 255, 0.8);
     }
 
-    .btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+    .btn-secondary:hover {
+      background: var(--white);
+      color: var(--navy);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 34px rgba(0, 0, 0, 0.18);
     }
 
     main {
       display: flex;
       flex-direction: column;
-      gap: 6rem;
+      gap: 5rem;
       padding: 5rem 1.5rem 6rem;
     }
 
     section {
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 0 auto;
-      background: #fff;
-      border-radius: 28px;
+      background: var(--cream);
+      border-radius: 32px;
       padding: 3.5rem 3rem;
-      box-shadow: 0 24px 50px rgba(3, 28, 58, 0.08);
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(207, 203, 191, 0.45);
       position: relative;
       overflow: hidden;
     }
 
-    section::before {
-      content: "";
-      position: absolute;
-      height: 160px;
-      width: 160px;
-      border-radius: 50%;
-      background: var(--soft-purple);
-      opacity: 0.18;
-      top: -80px;
-      left: -70px;
-    }
-
+    section::before,
     section::after {
       content: "";
       position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    section::before {
+      height: 160px;
+      width: 160px;
+      top: -60px;
+      left: -70px;
+      background: rgba(207, 203, 191, 0.24);
+    }
+
+    section::after {
       height: 220px;
       width: 220px;
-      border-radius: 50%;
-      background: var(--mint);
-      opacity: 0.12;
-      bottom: -110px;
+      bottom: -120px;
       right: -90px;
+      background: rgba(47, 70, 108, 0.12);
     }
 
     section h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: clamp(2rem, 3vw, 2.8rem);
+      font-family: 'Elephont-Bold', 'Georgia', serif;
+      font-size: clamp(2.1rem, 3.2vw, 3rem);
+      letter-spacing: -0.025em;
       margin-bottom: 1.5rem;
+      color: var(--navy);
     }
 
-    section p, section li {
+    section p,
+    section li {
       line-height: 1.7;
-      font-size: 1rem;
+      font-size: 1.05rem;
+      color: var(--muted);
     }
 
     .highlight {
       display: inline-block;
-      background: var(--accent);
-      color: var(--deep-blue);
-      border-radius: 12px;
-      padding: 0.35rem 0.85rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      font-size: 0.95rem;
-      letter-spacing: 0.05em;
+      background: var(--orange);
+      color: var(--white);
+      border-radius: 999px;
+      padding: 0.4rem 0.95rem;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
     }
 
     .features {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
+      gap: 1.75rem;
       margin-top: 2.5rem;
     }
 
     .feature {
-      background: rgba(19, 199, 255, 0.07);
-      border-radius: 20px;
-      padding: 1.8rem 1.6rem;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      position: relative;
-      overflow: hidden;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 1.9rem 1.7rem;
+      border: 1px solid rgba(207, 203, 191, 0.6);
+      box-shadow: 0 18px 40px rgba(47, 70, 108, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .feature::after {
-      content: "";
-      position: absolute;
-      height: 90px;
-      width: 90px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.25);
-      bottom: -45px;
-      right: -40px;
+    .feature:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 48px rgba(47, 70, 108, 0.16);
     }
 
     .feature h3 {
-      margin-bottom: 0.6rem;
-      font-size: 1.2rem;
+      margin-bottom: 0.65rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: var(--deep-blue);
+      color: var(--navy);
     }
 
     .stats {
       display: flex;
       flex-wrap: wrap;
       gap: 1.5rem;
-      margin-top: 2.5rem;
+      margin-top: 2.8rem;
     }
 
     .stat {
       flex: 1 1 220px;
-      background: #fff;
-      border-radius: 18px;
-      padding: 1.8rem;
-      box-shadow: inset 0 0 0 2px rgba(19, 199, 255, 0.2);
+      background: var(--white);
+      border-radius: 24px;
+      padding: 1.9rem;
+      border: 4px solid rgba(47, 70, 108, 0.12);
       text-align: center;
+      box-shadow: inset 0 0 0 1px rgba(207, 203, 191, 0.2);
     }
 
     .stat span {
       display: block;
-      font-size: 2.6rem;
+      font-size: 2.8rem;
       font-weight: 700;
-      color: var(--deep-blue);
+      color: var(--navy);
+      font-family: 'Elephont-Bold', 'Georgia', serif;
     }
 
     .stat small {
       display: block;
-      margin-top: 0.35rem;
-      font-weight: 500;
+      margin-top: 0.45rem;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .section-grid {
+      display: grid;
+      gap: 2.5rem;
+      align-items: stretch;
     }
 
     .ecosystem {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1.75rem;
-      margin-top: 2rem;
+      margin-top: 2.25rem;
     }
 
     .ecosystem-card {
-      background: rgba(255, 255, 255, 0.8);
-      border-radius: 20px;
-      padding: 2rem 1.75rem;
-      border: 1px solid rgba(3, 28, 58, 0.08);
-      backdrop-filter: blur(6px);
+      background: var(--white);
+      border-radius: 24px;
+      padding: 1.9rem 1.8rem;
+      border: 1px solid rgba(207, 203, 191, 0.55);
+      box-shadow: 0 18px 36px rgba(47, 70, 108, 0.1);
     }
 
     .ecosystem-card h3 {
       margin-bottom: 1rem;
-      font-size: 1.15rem;
-      color: var(--deep-blue);
+      font-size: 1.2rem;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .architecture-visual {
+      position: relative;
+      border-radius: 28px;
+      padding: 1.5rem;
+      background: var(--white);
+      border: 1px solid rgba(207, 203, 191, 0.55);
+      box-shadow: 0 24px 52px rgba(47, 70, 108, 0.14);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .architecture-visual::after {
+      content: "";
+      position: absolute;
+      height: 120px;
+      width: 120px;
+      border-radius: 50%;
+      background: rgba(237, 88, 50, 0.12);
+      top: -40px;
+      right: -50px;
+    }
+
+    .architecture-visual img {
+      display: block;
+      width: 100%;
+      border-radius: 18px;
+    }
+
+    .architecture-visual figcaption {
+      font-size: 0.9rem;
+      color: var(--muted);
     }
 
     .cta-section {
-      background: var(--bg-gradient);
-      color: #fff;
+      background: radial-gradient(circle at top left, #f3633e, var(--orange));
+      color: var(--white);
       text-align: center;
-      padding: 4rem 2rem 4.5rem;
-      border-radius: 28px;
+      padding: 4.25rem 2.5rem 4.75rem;
+      border-radius: 32px;
       position: relative;
       overflow: hidden;
+      box-shadow: var(--card-shadow);
     }
 
     .cta-section::before,
@@ -274,13 +388,13 @@
       content: "";
       position: absolute;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.18);
     }
 
     .cta-section::before {
       height: 340px;
       width: 340px;
-      top: -120px;
+      top: -140px;
       left: -140px;
     }
 
@@ -292,25 +406,80 @@
     }
 
     .cta-section h2 {
-      color: #fff;
-      margin-bottom: 1rem;
+      color: var(--white);
+      margin-bottom: 1.2rem;
+      font-family: 'Elephont-Bold', 'Georgia', serif;
+      letter-spacing: -0.02em;
+    }
+
+    .cta-section p {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .cta-section .cta-group {
+      justify-content: center;
+      margin-top: 2rem;
     }
 
     footer {
       text-align: center;
-      padding: 2rem 1rem 3rem;
-      font-size: 0.9rem;
-      color: rgba(3, 28, 58, 0.6);
+      padding: 2.5rem 1rem 3.5rem;
+      font-size: 0.95rem;
+      color: rgba(70, 70, 71, 0.75);
+    }
+
+    @media (min-width: 960px) {
+      .section-grid {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 960px) {
+      header {
+        padding-bottom: 4.5rem;
+      }
+
+      .hero {
+        text-align: left;
+      }
+
+      .hero-content {
+        align-items: flex-start;
+      }
     }
 
     @media (max-width: 768px) {
       section {
-        padding: 2.75rem 1.75rem;
+        padding: 3rem 2rem;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+
+      .hero .cta-group,
+      .cta-section .cta-group {
+        justify-content: flex-start;
+      }
+
+      .hero-visual {
+        padding: 1.25rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      section {
+        padding: 2.5rem 1.6rem;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
       }
 
       .hero .cta-group {
-        flex-direction: column;
-        gap: 0.75rem;
+        width: 100%;
       }
     }
   </style>
@@ -321,7 +490,7 @@
       <div class="highlight">Introducing ZVDB</div>
       <h1>Empower Zoo Research With Intelligent Video Insight</h1>
       <p>
-        The Zoological Video Database (ZVDB) equips animal behavior teams with a unified platform for large-scale video ingestion, metadata enrichment, and cost-optimized cloud storage. Preserve history, accelerate analysis, and collaborate across departments—all in a modern, intuitive workspace.
+        The Zoological Video Database makes it easy to apply advanced media intelligence to video libraries of wildlife behavior for more connected and collaborative science at zoos and partner institutions worldwide. 
       </p>
       <div class="cta-group">
         <button class="btn btn-primary">Learn more</button>
@@ -370,40 +539,53 @@
     </section>
 
     <section id="architecture">
-      <span class="highlight">Architecture Snapshot</span>
-      <h2>Cloud-Native From Camera Trap To Curated Collection</h2>
-      <p>
-        ZVDB combines an AWS CDK-driven backend with a React + Apollo Client frontend. Together they deliver consistent deployments,
-        scalable performance, and a best-in-class user experience for animal behavior specialists.
-      </p>
-      <div class="ecosystem">
-        <div class="ecosystem-card">
-          <h3>AWS Foundations</h3>
-          <ul>
-            <li>AppSync GraphQL API orchestrates queries and mutations.</li>
-            <li>Lambda functions handle video ingest, tagging, and presigned URL delivery.</li>
-            <li>DynamoDB stores users, videos, collections, and download requests.</li>
-            <li>S3 lifecycle policies shift footage to Glacier Deep Archive automatically.</li>
-          </ul>
+      <div class="section-grid">
+        <div>
+          <span class="highlight">Architecture Snapshot</span>
+          <h2>Cloud-Native From Camera Trap To Curated Collection</h2>
+          <p>
+            ZVDB combines an AWS CDK-driven backend with a React + Apollo Client frontend. Together they deliver consistent deployments,
+            scalable performance, and a best-in-class user experience for animal behavior specialists.
+          </p>
+          <div class="ecosystem">
+            <div class="ecosystem-card">
+              <h3>AWS Foundations</h3>
+              <ul>
+                <li>AppSync GraphQL API orchestrates queries and mutations.</li>
+                <li>Lambda functions handle video ingest, tagging, and presigned URL delivery.</li>
+                <li>DynamoDB stores users, videos, collections, and download requests.</li>
+                <li>S3 lifecycle policies shift footage to Glacier Deep Archive automatically.</li>
+              </ul>
+            </div>
+            <div class="ecosystem-card">
+              <h3>Frontend Experience</h3>
+              <ul>
+                <li>React SPA with Material UI and thematic context switching.</li>
+                <li>Apollo Client caches AppSync responses for instant browsing.</li>
+                <li>Upload manager supports simultaneous large video transfers.</li>
+                <li>Dynamic dashboards expose request KPIs and curation insights.</li>
+              </ul>
+            </div>
+            <div class="ecosystem-card">
+              <h3>Operational Confidence</h3>
+              <ul>
+                <li>GitHub workflows automate CDK deployments and frontend releases.</li>
+                <li>Terraform provisions static hosting with CloudFront edge delivery.</li>
+                <li>Cognito secures identity, while IAM fine-tunes service access.</li>
+                <li>Observability via CloudWatch and structured logging in Lambda.</li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="ecosystem-card">
-          <h3>Frontend Experience</h3>
-          <ul>
-            <li>React SPA with Material UI and thematic context switching.</li>
-            <li>Apollo Client caches AppSync responses for instant browsing.</li>
-            <li>Upload manager supports simultaneous large video transfers.</li>
-            <li>Dynamic dashboards expose request KPIs and curation insights.</li>
-          </ul>
-        </div>
-        <div class="ecosystem-card">
-          <h3>Operational Confidence</h3>
-          <ul>
-            <li>GitHub workflows automate CDK deployments and frontend releases.</li>
-            <li>Terraform provisions static hosting with CloudFront edge delivery.</li>
-            <li>Cognito secures identity, while IAM fine-tunes service access.</li>
-            <li>Observability via CloudWatch and structured logging in Lambda.</li>
-          </ul>
-        </div>
+        <figure class="architecture-visual">
+          <img
+            id="elephant-spotlight"
+            alt="Elephant roaming through the habitat captured on video"
+            loading="lazy"
+            src="data:image/webp;base64,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"
+          />
+          <figcaption>Automated tagging keeps every moment searchable without compromising archival quality.</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -440,26 +622,42 @@
         Partner with the Zoological Video Database team to launch a unified, secure, and future-proof archive that keeps your animal
         research at the forefront.
       </p>
-      <div class="cta-group" style="justify-content: center; margin-top: 1.8rem;">
+      <div class="cta-group">
         <button class="btn btn-primary">Request Pilot Access</button>
-        <button class="btn btn-secondary" style="border-color: rgba(255,255,255,0.6);">Download Solution Brief</button>
+        <button class="btn btn-secondary">Download Solution Brief</button>
       </div>
     </section>
   </main>
 
-  <footer>
-    © <span id="year"></span> Zoological Video Database · Crafted for animal behavior research teams.
-  </footer>
-
+  <header>
+    <div class="hero">
+      <div class="hero-content">
+        <span class="highlight">Introducing ZVDB</span>
+        <h1>Empower Zoo Research With Intelligent Video Insight</h1>
+        <p>
+          The Zoological Video Database (ZVDB) equips animal behavior teams with a unified platform for large-scale video ingestion, metadata enrichment, and cost-optimized cloud storage. Preserve history, accelerate analysis, and collaborate across departments—all in a modern, intuitive workspace.
+        </p>
+        <div class="cta-group">
+          <button class="btn btn-primary">Learn more</button>
+          <button class="btn btn-secondary">Get started</button>
+        </div>
+      </div>
+      <figure class="hero-visual">
+  <img
+    id="hero-illustration"
+    alt="Wildlife researcher analyzing zoo footage on a tablet"
+    loading="lazy"
+    src="data:image/webp;base64,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
+"
+  />
+      </figure>
+    </div>
+  </header>
+  </header>
   <script>
-    const yearEl = document.getElementById('year');
-    yearEl.textContent = new Date().getFullYear();
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    const fadeUp = (target, delay = 0) => {
+    function fadeUp(target, delay = 0.2) {
       gsap.from(target, {
-        y: 70,
+        y: 60,
         opacity: 0,
         duration: 1,
         ease: 'power3.out',
@@ -470,7 +668,7 @@
           toggleActions: 'play none none reverse'
         }
       });
-    };
+    }
 
     // Hero reveal
     gsap.from('.hero h1', { y: 80, opacity: 0, duration: 1.2, ease: 'power3.out' });
